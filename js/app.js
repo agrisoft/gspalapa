@@ -14,8 +14,8 @@ nodeManager.constant('USER_ROLES', {
         notAuthenticated: 'auth-not-authenticated',
         notAuthorized: 'auth-not-authorized'
     }).constant('CONFIG', {
-        api_url: 'http://localhost:5000/api/',
-        gs_url: 'http://192.168.198.133:8080/geoserver/wms'
+        api_url: 'http://palapa.agrisoft-cb.com/gs/api/',
+        gs_url: 'http://palapa.agrisoft-cb.com:8080/geoserver/wms'
     }).constant('LAYER', {
         preview: '',
         id: '',
@@ -106,7 +106,15 @@ nodeManager.controller('SideMenuController', function($scope, CONFIG, $http) {
         {
             title: "Konfigurasi",
             action: "#",
-            menus: [{
+            menus: [
+                {
+                    title: "Sistem",
+                    action: "#/sistem",
+                    icons: "fa fa-cogs",
+                    tooltip: "Konfigurasi sistem",
+                    level: "admin"
+                },
+		{
                     title: "Grup",
                     action: "#/grup",
                     icons: "fa fa-users",
@@ -126,13 +134,6 @@ nodeManager.controller('SideMenuController', function($scope, CONFIG, $http) {
                     icons: "fa fa-paint-brush",
                     tooltip: "Manajemen Style GeoServer",
                     level: "member"
-                },
-                {
-                    title: "Sistem",
-                    action: "#/sistem",
-                    icons: "fa fa-cogs",
-                    tooltip: "Konfigurasi sistem",
-                    level: "admin"
                 },
             ]
         }
@@ -858,8 +859,7 @@ nodeManager.controller('PenggunaCtrl', function($rootScope, $scope, CONFIG, $htt
     $scope.sortReverse = false; // set the default sort order
     $scope.cariPengguna = ''; // set the default search/filter term
     $scope.theuser = $rootScope.currentUser['user']
-    $scope.level = $rootScope.currentUser['kelas']
-    console.log($rootScope.currentUser)
+    console.log($scope.theuser)
 
     $scope.cekuser = function(user) {
         if (user == $scope.theuser || $scope.theuser == 'palapa') {
@@ -870,7 +870,7 @@ nodeManager.controller('PenggunaCtrl', function($rootScope, $scope, CONFIG, $htt
     }
 
     $scope.cekdelete = function(user) {
-        if ($scope.level == 'admin') {
+        if ($scope.theuser == 'palapa') {
             return false;
         } else {
             return true;
@@ -1241,20 +1241,11 @@ nodeManager.directive('grupInfoDialog', [function() {
     };
 }]);
 
-nodeManager.controller('MetalinksCtrl', function($rootScope, $scope, CONFIG, $http, $state, $stateParams, $upload, $timeout, $uibModal, USER_ROLES) {
+nodeManager.controller('MetalinksCtrl', function($scope, CONFIG, $http, $state, $stateParams, $upload, $timeout, $uibModal, USER_ROLES) {
     $scope.sortType = 'name'; // set the default sort type
     $scope.sortReverse = false; // set the default sort order
     $scope.cariMetalinks = ''; // set the default search/filter term
-    $scope.level = $rootScope.currentUser['kelas']
     // create the list of sushi rolls 
-
-    $scope.cekdelete = function(user) {
-        if ($scope.level == 'admin') {
-            return false;
-        } else {
-            return true;
-        }
-    }
 
     $scope.upload = [];
     $scope.progress = 0;
@@ -1549,20 +1540,11 @@ nodeManager.directive('linkHapusDialog', [function() {
     };
 }]);
 
-nodeManager.controller('MetakugiCtrl', function($rootScope, $scope, CONFIG, $http, $state, $stateParams, $upload, $timeout, $uibModal, USER_ROLES) {
+nodeManager.controller('MetakugiCtrl', function($scope, CONFIG, $http, $state, $stateParams, $upload, $timeout, $uibModal, USER_ROLES) {
     $scope.sortType = 'name'; // set the default sort type
     $scope.sortReverse = false; // set the default sort order
     $scope.cariMetalinks = ''; // set the default search/filter term
-    $scope.level = $rootScope.currentUser['kelas']
     // create the list of sushi rolls 
-
-    $scope.cekdelete = function(user) {
-        if ($scope.level == 'admin') {
-            return false;
-        } else {
-            return true;
-        }
-    } 
 
     $scope.upload = [];
     $scope.progress = 0;
