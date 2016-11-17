@@ -65,9 +65,9 @@
                             <div class="btn-group">
                                 <!--<button type="button" class="btn btn-danger" ng-click="hapusGrup.open(item)"><span class=" glyphicon glyphicon-remove "></span></button>-->
                                 <button type="button" ng-disabled="item.metatick!='Y'" class="btn btn-success" ng-click="lihatLink.open(item)" tooltip-placement="left" uib-tooltip="Raw XML metadata."><span class="glyphicon glyphicon-info-sign"></span></button>
-                                <button type="button" ng-disabled="item.metatick!='Y'" class="btn btn-warning" ng-click="publishLink.open(item)" tooltip-placement="top" uib-tooltip="Publikasi metadata ke servis CSW."><span class="glyphicon glyphicon-share"></span></button>
+                                <button ng-hide="cekdelete(level)" type="button" ng-disabled="item.metatick!='Y'" class="btn btn-warning" ng-click="publishLink.open(item)" tooltip-placement="top" uib-tooltip="Publikasi metadata ke servis CSW."><span class="glyphicon glyphicon-share"></span></button>
                                 <button type="button" class="btn btn-warning" ng-click="tambahLink.open(item)" tooltip-placement="right" uib-tooltip="Unggah/update berkas XML metadata."><span class="glyphicon glyphicon-edit"></span></button>
-                                <button type="button" ng-disabled="item.metatick!='Y' || item.published!='Y'" class="btn btn-danger" ng-click="hapusLink.open(item)" tooltip-placement="right" uib-tooltip="Hilangkan publikasi dari servis CSW."><span class=" glyphicon glyphicon-remove"></span></button>
+                                <button ng-hide="cekdelete(level)" type="button" ng-disabled="item.metatick!='Y' || item.published!='Y'" class="btn btn-danger" ng-click="hapusLink.open(item)" tooltip-placement="right" uib-tooltip="Hilangkan publikasi dari servis CSW."><span class=" glyphicon glyphicon-remove"></span></button>
                             </div>
                         </td>
                     </tr>

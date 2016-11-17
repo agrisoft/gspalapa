@@ -2,7 +2,7 @@
     <div class="panel panel-default">
         <div class="panel-heading clearfix">Konfigurasi Pengguna
             <button type="button" class="btn btn-info pull-right" ng-click="reloadView()"><span class="glyphicon glyphicon-refresh"></span> Refresh</button>
-            <button type="button" class="btn btn-primary pull-right" data-toggle="modal" data-target="#pengguna_tambah" ng-hide="currentUser != 'palapa'"><span class="glyphicon glyphicon-upload"></span> Tambah Pengguna</button></div>
+            <button type="button" class="btn btn-primary pull-right" data-toggle="modal" data-target="#pengguna_tambah" ng-hide="cekdelete(level)" tooltip-placement="right" uib-tooltip="Tambah pengguna."><span class="glyphicon glyphicon-upload"></span> Tambah Pengguna</button></div>
         <div class="panel-body">
 
             <form>
@@ -66,7 +66,7 @@
                         <td style="width: 120px">
                             <div class="btn-group">
                                 <button ng-hide="cekuser(item.name)" type="button" class="btn btn-warning" ng-click="editPengguna.open(item)" tooltip-placement="left" uib-tooltip="Edit password."><span class="glyphicon glyphicon-edit"></span></button>
-                                <button ng-hide="cekdelete(item.name)" type="button" class="btn btn-danger" ng-click="hapusPengguna.open(item)" tooltip-placement="left" uib-tooltip="Hapus pengguna."><span class="glyphicon glyphicon-remove"></span></button>
+                                <button ng-hide="cekdelete(level)" type="button" class="btn btn-danger" ng-click="hapusPengguna.open(item)" tooltip-placement="right" uib-tooltip="Hapus pengguna."><span class="glyphicon glyphicon-remove"></span></button>
                             </div>
                         </td>
                     </tr>
