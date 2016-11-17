@@ -82,9 +82,9 @@
                         <td style="width: 180px">
                             <div class="btn-group">
                                 <button type="button" ng-disabled="item.metatick!='Y'" class="btn btn-success" ng-click="lihatKugi.open(item)" tooltip-placement="left" uib-tooltip="Raw XML metadata."><span class="glyphicon glyphicon-info-sign"></span></button>
-                                <button ng-hide="cekdelete(level)" type="button" ng-disabled="item.metatick!='Y'" class="btn btn-warning" ng-click="publishKugi.open(item)" tooltip-placement="top" uib-tooltip="Publikasi metadata ke servis CSW."><span class="glyphicon glyphicon-share"></span></button>
+                                <button type="button" ng-disabled="item.metatick!='Y'" class="btn btn-warning" ng-click="publishKugi.open(item)" tooltip-placement="top" uib-tooltip="Publikasi metadata ke servis CSW."><span class="glyphicon glyphicon-share"></span></button>
                                 <button type="button" class="btn btn-warning" ng-click="tambahKugi.open(item)" tooltip-placement="right" uib-tooltip="Unggah/update berkas XML metadata."><span class="glyphicon glyphicon-edit"></span></button>
-                                <button ng-hide="cekdelete(level)" type="button" ng-disabled="item.metatick!='Y' || item.published!='Y'" class="btn btn-danger" ng-click="hapusKugi.open(item)" tooltip-placement="right" uib-tooltip="Hilangkan publikasi dari servis CSW."><span class=" glyphicon glyphicon-remove"></span></button>
+                                <button type="button" ng-disabled="item.metatick!='Y' || item.published!='Y'" class="btn btn-danger" ng-click="hapusKugi.open(item)" tooltip-placement="right" uib-tooltip="Hilangkan publikasi dari servis CSW."><span class=" glyphicon glyphicon-remove"></span></button>
                             </div>
                         </td>
                     </tr>

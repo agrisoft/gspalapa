@@ -2,7 +2,7 @@
     <div class="panel panel-default">
         <div class="panel-heading clearfix">Grup
             <button type="button" class="btn btn-info pull-right" ng-click="reloadView()"><span class="glyphicon glyphicon-refresh"></span> Refresh</button>
-            <button type="button" class="btn btn-primary pull-right" data-toggle="modal" data-target="#grup_tambah" tooltip-placement="left" uib-tooltip="Tambah Grup/Workspace."><span class="glyphicon glyphicon-upload"></span> Tambah Grup</button></div>
+            <button type="button" class="btn btn-primary pull-right" data-toggle="modal" data-target="#grup_tambah"><span class="glyphicon glyphicon-upload"></span> Tambah Grup</button></div>
         <div class="panel-body">
 
             <form>
@@ -48,9 +48,9 @@
                         </td>-->
                         <td style="width: 152px">
                             <div class="btn-group">
-                                <button type="button" class="btn btn-info" ng-click="infoGrup.open(item)" tooltip-placement="left" uib-tooltip="Grup Info."><span class=" glyphicon glyphicon-info-sign "></span></button>
-                                <button type="button" class="btn btn-warning" ng-click="editGrup.open(item)" tooltip-placement="top" uib-tooltip="Sunting Grup."><span class=" glyphicon glyphicon-edit "></span></button>
-                                <button type="button" class="btn btn-danger" ng-click="hapusGrup.open(item)" tooltip-placement="right" uib-tooltip="Hapus Grup."><span class=" glyphicon glyphicon-remove "></span></button>
+                                <button type="button" class="btn btn-info" ng-click="infoGrup.open(item)"><span class=" glyphicon glyphicon-info-sign "></span></button>
+                                <button type="button" class="btn btn-warning" ng-click="editGrup.open(item)"><span class=" glyphicon glyphicon-edit "></span></button>
+                                <button type="button" class="btn btn-danger" ng-click="hapusGrup.open(item)"><span class=" glyphicon glyphicon-remove "></span></button>
                             </div>
                         </td>
                     </tr>
@@ -87,11 +87,11 @@
                         <td style="width: 150px"><strong>Nama Organisasi</strong></td>
                         <td><input class="form-control input-sm" type="text" style="width: 500" ng-model="grupentry.organization"></td>
                     </tr>
-                    <tr class="warning">
+<!--                    <tr class="warning">
                         <td style="width: 150px"><strong>Kode Simpul</strong></td>
                         <td><input type="text" ng-model="grupentry.kodesimpul" uib-typeahead="state for state in kodesimpul | filter:$viewValue | limitTo:8" class="form-control">
                         </td>
-                    </tr>
+                    </tr>-->
                     <tr>
                         <td style="width: 150px"><strong>Alamat URL</strong></td>
                         <td><input class="form-control input-sm" type="text" style="width: 500" ng-model="grupentry.url"></td>
