@@ -114,6 +114,13 @@ nodeManager.controller('SideMenuController', function($scope, CONFIG, $http) {
                     level: "admin"
                 },
                 {
+                    title: "Front End",
+                    action: "#/sisfront",
+                    icons: "fa fa-stack-exchange",
+                    tooltip: "Konfigurasi frontend",
+                    level: "admin"
+                },
+                {
                     title: "Grup",
                     action: "#/grup",
                     icons: "fa fa-users",
@@ -2709,4 +2716,27 @@ nodeManager.controller('SistemCtrl', function($rootScope, $scope, CONFIG, $http,
     $http.get(CONFIG.api_url + 'sisteminfo').success(function(data) {
         $scope.sisteminfo = data;
     });
+});
+
+nodeManager.controller('SisFrontCtrl', function($rootScope, $scope, CONFIG, $http, $state, $stateParams, $upload, $timeout) {
+    $scope.sortType = 'name'; // set the default sort type
+    $scope.sortReverse = false; // set the default sort order
+    $scope.cariLayer = ''; // set the default search/filter term
+    $scope.sisteminfo = '';
+
+    $http.get(CONFIG.api_url + 'getWMSlayers').success(function(data) {
+        $scope.wmslayer = data;
+    });
+
+    $scope.wmsname = {
+        wmslayer: []
+    }
+
+    $scope.reloadView = function() {
+        $state.transitionTo($state.current, $stateParams, {
+            reload: true,
+            inherit: false,
+            notify: true
+        });
+    }
 });
