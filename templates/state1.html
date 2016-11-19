@@ -86,10 +86,10 @@
                         <td>{{ layer.layer_srs }}</td>
                         <td>
                             <div class="btn-group">
-                                <button type="button" class="btn btn-info" ng-click="infoLayer.open(layer)"><span class="glyphicon glyphicon-info-sign" tooltip-placement="left" uib-tooltip="Informasi dasar layer GeoServer."></span></button>
-                                <button type="button" class="btn btn-warning" ng-disabled="{{cekowner(layer.workspace,init.grup,init.user) ? 'true' : 'false'}}" ng-click="editLayer.open(layer)" tooltip-placement="top" uib-tooltip="Sunting informasi dasar layer GeoServer."><span class="glyphicon glyphicon-edit"></span></button>
-                                <button type="button" class="btn btn-warning" ng-disabled="{{cekowner(layer.workspace,init.grup,init.user) ? 'true' : 'false'}}" ng-click="advLayer.open(layer)" tooltip-placement="top" uib-tooltip="Set status advertise dari layer."><span class="glyphicon glyphicon-check"></span></button>
-                                <button type="button" class="btn btn-danger" ng-disabled="{{cekowner(layer.workspace,init.grup,init.user) ? 'true' : 'false'}}" ng-click="hapusLayer.open(layer)" tooltip-placement="right" uib-tooltip="Hapus layer dari GeoServer."><span class="glyphicon glyphicon-remove"></span></button>
+                                <button type="button" class="btn btn-info" ng-click="infoLayer.open(layer)"><span class="glyphicon glyphicon-info-sign" tooltip-placement="left" uib-tooltip="Informasi"></span></button>
+                                <button type="button" class="btn btn-warning" ng-disabled="{{cekowner(layer.workspace,init.grup,init.user) ? 'true' : 'false'}}" ng-click="editLayer.open(layer)" tooltip-placement="top" uib-tooltip="Edit"><span class="glyphicon glyphicon-edit"></span></button>
+                                <button type="button" class="btn btn-warning" ng-disabled="{{cekowner(layer.workspace,init.grup,init.user) ? 'true' : 'false'}}" ng-click="advLayer.open(layer)" tooltip-placement="top" uib-tooltip="Publikasi"><span class="glyphicon glyphicon-check"></span></button>
+                                <button type="button" class="btn btn-danger" ng-disabled="{{cekowner(layer.workspace,init.grup,init.user) ? 'true' : 'false'}}" ng-click="hapusLayer.open(layer)" tooltip-placement="right" uib-tooltip="Hapus"><span class="glyphicon glyphicon-remove"></span></button>
                             </div>
                         </td>
                     </tr>

@@ -14,8 +14,8 @@ nodeManager.constant('USER_ROLES', {
         notAuthenticated: 'auth-not-authenticated',
         notAuthorized: 'auth-not-authorized'
     }).constant('CONFIG', {
-        api_url: 'http://palapa.agrisoft-cb.com/gs/api/',
-        gs_url: 'http://palapa.agrisoft-cb.com:8080/geoserver/wms'
+        api_url: 'http://localhost:5000/api/',
+        gs_url: 'http://192.168.198.133:8080/geoserver/wms'
     }).constant('LAYER', {
         preview: '',
         id: '',
@@ -106,15 +106,14 @@ nodeManager.controller('SideMenuController', function($scope, CONFIG, $http) {
         {
             title: "Konfigurasi",
             action: "#",
-            menus: [
-                {
+            menus: [{
                     title: "Sistem",
                     action: "#/sistem",
                     icons: "fa fa-cogs",
                     tooltip: "Konfigurasi sistem",
                     level: "admin"
                 },
-		{
+                {
                     title: "Grup",
                     action: "#/grup",
                     icons: "fa fa-users",
@@ -502,7 +501,7 @@ nodeManager.controller('LayersCtrl', function($rootScope, $scope, CONFIG, LAYER,
         this.jstyles = $scope.styles;
         nativename = layer.layer_nativename
         this.selectedstyle = { value: this.layer.layer_style }
-        console.log(this.selectedstyle)
+        console.log(this.jstyles)
         setTimeout(function() {
             $scope.$apply(function() {
                 $scope.wms.source.params.LAYERS = nativename
@@ -907,10 +906,13 @@ nodeManager.controller('PenggunaCtrl', function($rootScope, $scope, CONFIG, $htt
         this.item = item;
         console.log(item);
         this.visible = true;
+        this.selectedgrup = { value: this.item.groupname }
+        console.log(this.selectedgrup);
     };
 
     EditPenggunaDialogModel.prototype.close = function() {
         this.visible = false;
+        $scope.reloadView();
     };
 
     $scope.hapusPengguna = new HapusPenggunaDialogModel();
@@ -936,10 +938,27 @@ nodeManager.controller('PenggunaCtrl', function($rootScope, $scope, CONFIG, $htt
     });
 
     $http.get(CONFIG.api_url + 'group/list').success(function(data) {
-        temp = {};
-        for (x in data) { temp[x] = data[x].name }
-        $scope.grup = temp;
+        ugrup = data;
+        ngrup = [];
+        for (var i = 0; i < ugrup.length; i++) {
+            // jstyles[i] = ustyles[i].name;
+            // nstyles[i]['value'] = ustyles[i].name;
+            ngrup.push({ 'value': ugrup[i].name, 'text': ugrup[i].name });
+            // nstyles[i] = { 'value': ustyles[i].name, 'text': ustyles[i].name }
+            // console.log("PAIR " + i + ": " + ustyles[i].name);
+        };
+        // console.log(jstyles);
+        // $scope.styles = jstyles.sort();
+        $scope.grup = ngrup;
+        // console.log(ngrup);
     });
+
+    // $http.get(CONFIG.api_url + 'group/list').success(function(data) {
+    //     temp = {};
+    //     for (x in data) { temp[x] = data[x].name }
+    //     $scope.grup = temp;
+    //     console.log($scope.grup)
+    // });
 
     $scope.tambahGSPengguna = function() {
         var params = $scope.penggunaentry;
@@ -954,6 +973,22 @@ nodeManager.controller('PenggunaCtrl', function($rootScope, $scope, CONFIG, $htt
             $scope.test = data;
             console.log($scope.test);
         })
+    }
+
+    $scope.editGSPengguna = function(grup) {
+        var params = $scope.model.item;
+        params.groupname = grup
+        params.individualname = encodeURIComponent(params.individualname)
+        console.log(params)
+        var data = $.param({
+            json: JSON.stringify({
+                pubdata: params
+            })
+        });
+        $http.post(CONFIG.api_url + 'user/edit', data).success(function(data, status) {
+            $scope.test = data;
+            console.log($scope.test);
+        });
     }
 
     $scope.hapusGSPengguna = function() {

@@ -26,7 +26,7 @@
                     <tr>
                         <td style="width: 150px"><strong>Grup</strong></td>
                         <td>
-                            <select ng-model="model.selectedgrup" ng-options="obj.name as obj.text for obj in grup track by obj.name">
+                            <select ng-model="model.selectedgrup" ng-options="obj.value as obj.text for obj in grup track by obj.value">
                             </select>
                         </td>
                     </tr>
@@ -56,7 +56,7 @@
                 </table>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-danger" data-dismiss="modal" id="btnGrupTambah" ng-click="tambahGSPengguna()">Edit</button>
+                <button type="button" class="btn btn-danger" data-dismiss="modal" id="btnGrupTambah" ng-click="editGSPengguna(model.selectedgrup)">Edit</button>
                 <button type="button" class="btn btn-default" data-dismiss="modal">Tutup</button>
             </div>
         </div>
@@ -64,8 +64,8 @@
     </div>
 </div>
 
-<script>
+<!--<script>
     $('#pengguna_hapus').on('hidden.bs.modal', function() {
         angular.element($("#PenggunaView")).scope().reloadView();
     });
-</script>
+</script>-->
