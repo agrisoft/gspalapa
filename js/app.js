@@ -382,7 +382,7 @@ nodeManager.controller('LayersCtrl', function($rootScope, $scope, CONFIG, LAYER,
             title: encodeURIComponent($scope.model.layer.layer_name),
             abstract: encodeURIComponent($scope.model.layer.layer_abstract),
             aktif: $scope.model.layer.layer_aktif,
-            style: $scope.model.layer.layer_style,
+            style: $scope.model.selectedstyle,
             nativename: $scope.model.layer.layer_nativename,
             tipe: $scope.model.layer.layer_type
         };
@@ -1276,7 +1276,7 @@ nodeManager.directive('grupInfoDialog', [function() {
     };
 }]);
 
-nodeManager.controller('MetalinksCtrl', function($scope, CONFIG, $http, $state, $stateParams, $upload, $timeout, $uibModal, USER_ROLES) {
+nodeManager.controller('MetalinksCtrl', function($rootScope, $scope, CONFIG, $http, $state, $stateParams, $upload, $timeout, $uibModal, USER_ROLES) {
     $scope.sortType = 'name'; // set the default sort type
     $scope.sortReverse = false; // set the default sort order
     $scope.cariMetalinks = ''; // set the default search/filter term
@@ -1286,6 +1286,15 @@ nodeManager.controller('MetalinksCtrl', function($scope, CONFIG, $http, $state, 
     $scope.progress = 0;
     $scope.response = '';
     $scope.xml = '';
+
+    $scope.theuser = $rootScope.currentUser['user']
+    $scope.cekdelete = function(user) {
+        if ($scope.theuser == 'palapa') {
+            return false;
+        } else {
+            return true;
+        }
+    }
 
     $scope.reloadView = function() {
         $state.transitionTo($state.current, $stateParams, {
@@ -1575,7 +1584,7 @@ nodeManager.directive('linkHapusDialog', [function() {
     };
 }]);
 
-nodeManager.controller('MetakugiCtrl', function($scope, CONFIG, $http, $state, $stateParams, $upload, $timeout, $uibModal, USER_ROLES) {
+nodeManager.controller('MetakugiCtrl', function($rootScope, $scope, CONFIG, $http, $state, $stateParams, $upload, $timeout, $uibModal, USER_ROLES) {
     $scope.sortType = 'name'; // set the default sort type
     $scope.sortReverse = false; // set the default sort order
     $scope.cariMetalinks = ''; // set the default search/filter term
@@ -1585,6 +1594,15 @@ nodeManager.controller('MetakugiCtrl', function($scope, CONFIG, $http, $state, $
     $scope.progress = 0;
     $scope.response = '';
     $scope.xml = '';
+
+    $scope.theuser = $rootScope.currentUser['user']
+    $scope.cekdelete = function(user) {
+        if ($scope.theuser == 'palapa') {
+            return false;
+        } else {
+            return true;
+        }
+    }
 
     $scope.reloadView = function() {
         $state.transitionTo($state.current, $stateParams, {
