@@ -1288,9 +1288,18 @@ nodeManager.controller('MetalinksCtrl', function($rootScope, $scope, CONFIG, $ht
     $scope.xml = '';
 
     $scope.theuser = $rootScope.currentUser['user']
-    $scope.curgrup = $rootScope.currentUser['grup']
-    $scope.cekdelete = function(user) {
-        if ($scope.theuser == 'palapa') {
+    $scope.curwrk = $rootScope.currentUser['grup']
+    $scope.curgrup = $rootScope.currentUser['kelas']
+    $scope.cekgrup = function(user) {
+        if ($scope.curgrup == 'admin' || $scope.curgrup == $scope.curwrk) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    $scope.cekadmin = function() {
+        if ($scope.curgrup == 'admin') {
             return false;
         } else {
             return true;
@@ -1597,9 +1606,18 @@ nodeManager.controller('MetakugiCtrl', function($rootScope, $scope, CONFIG, $htt
     $scope.xml = '';
 
     $scope.theuser = $rootScope.currentUser['user']
-    $scope.curgrup = $rootScope.currentUser['grup']
-    $scope.cekdelete = function(user) {
-        if ($scope.theuser == 'palapa') {
+    $scope.curwrk = $rootScope.currentUser['grup']
+    $scope.curgrup = $rootScope.currentUser['kelas']
+    $scope.cekgrup = function(user) {
+        if ($scope.curgrup == 'admin' || $scope.curgrup == $scope.curwrk) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    $scope.cekadmin = function() {
+        if ($scope.curgrup == 'admin') {
             return false;
         } else {
             return true;
