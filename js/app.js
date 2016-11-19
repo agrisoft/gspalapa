@@ -1288,6 +1288,7 @@ nodeManager.controller('MetalinksCtrl', function($rootScope, $scope, CONFIG, $ht
     $scope.xml = '';
 
     $scope.theuser = $rootScope.currentUser['user']
+    $scope.curgrup = $rootScope.currentUser['grup']
     $scope.cekdelete = function(user) {
         if ($scope.theuser == 'palapa') {
             return false;
@@ -1596,6 +1597,7 @@ nodeManager.controller('MetakugiCtrl', function($rootScope, $scope, CONFIG, $htt
     $scope.xml = '';
 
     $scope.theuser = $rootScope.currentUser['user']
+    $scope.curgrup = $rootScope.currentUser['grup']
     $scope.cekdelete = function(user) {
         if ($scope.theuser == 'palapa') {
             return false;
