@@ -1291,7 +1291,7 @@ nodeManager.controller('MetalinksCtrl', function($rootScope, $scope, CONFIG, $ht
     $scope.curwrk = $rootScope.currentUser['grup']
     $scope.curgrup = $rootScope.currentUser['kelas']
     $scope.cekgrup = function(user) {
-        if ($scope.curgrup == 'admin' || $scope.curgrup == $scope.curwrk) {
+        if ($scope.curgrup == 'admin' || user == $scope.curwrk) {
             return false;
         } else {
             return true;
@@ -1609,7 +1609,7 @@ nodeManager.controller('MetakugiCtrl', function($rootScope, $scope, CONFIG, $htt
     $scope.curwrk = $rootScope.currentUser['grup']
     $scope.curgrup = $rootScope.currentUser['kelas']
     $scope.cekgrup = function(user) {
-        if ($scope.curgrup == 'admin' || $scope.curgrup == $scope.curwrk) {
+        if ($scope.curgrup == 'admin' || user == $scope.curwrk) {
             return false;
         } else {
             return true;
