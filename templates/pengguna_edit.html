@@ -7,7 +7,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
-                <h4 class="modal-title">Edit Password</h4>
+                <h4 class="modal-title">Edit Pengguna</h4>
             </div>
             <div class="modal-body">
                 <table class="table table-hover">
@@ -23,14 +23,14 @@
                         <td style="width: 150px"><strong>Password</strong></td>
                         <td><input class="form-control input-sm" type="password" style="width: 500" ng-model="model.item.password"></td>
                     </tr>
-                    <!--<tr>
+                    <tr>
                         <td style="width: 150px"><strong>Grup</strong></td>
                         <td>
-                            <select ng-model="model.item.grupname" ng-options="g as g for g in grup">
-              </select>
+                            <select ng-model="model.selectedgrup" ng-options="obj.name as obj.text for obj in grup track by obj.name">
+                            </select>
                         </td>
                     </tr>
-                    <tr>
+                    <!--<tr>
                         <td style="width: 150px"><strong>Role</strong></td>
                         <td>
                             <select ng-model="model.item.rolename" ng-options="r as r for r in roles">
@@ -56,7 +56,7 @@
                 </table>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-danger" data-dismiss="modal" id="btnGrupTambah" ng-click="tambahGSPengguna()" ng-disabled="!penggunaentry.name || !penggunaentry.password || !penggunaentry.grup || !penggunaentry.role || !penggunaentry.kelas || !penggunaentry">Tambah!</button>
+                <button type="button" class="btn btn-danger" data-dismiss="modal" id="btnGrupTambah" ng-click="tambahGSPengguna()">Edit</button>
                 <button type="button" class="btn btn-default" data-dismiss="modal">Tutup</button>
             </div>
         </div>
