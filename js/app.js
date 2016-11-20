@@ -1999,6 +1999,8 @@ nodeManager.controller('ctrl_dbdev', function($rootScope, $scope, CONFIG, LAYER,
         loading: false,
     };
 
+    $scope.loader_work = false
+
     $scope.showloader = function() {
         $scope.loader.loading = true;
     }
@@ -2024,11 +2026,12 @@ nodeManager.controller('ctrl_dbdev', function($rootScope, $scope, CONFIG, LAYER,
                 pubdata: params
             })
         });
-        $http.post(CONFIG.api_url + 'refresh_dbmetaview', data).success(function(data, status) {
-            $scope.test = data;
-            $scope.reloadView();
-            console.log($scope.test);
-        })
+        $http.post(CONFIG.api_url + 'refresh_dbmetaview', data)
+            .success(function(data, status) {
+                $scope.test = data;
+                $scope.reloadView();
+                console.log($scope.test);
+            })
     }
 
     var EksporDevprodDialogModel = function() {
@@ -2076,6 +2079,7 @@ nodeManager.controller('ctrl_dbdev', function($rootScope, $scope, CONFIG, LAYER,
         $http.post(CONFIG.api_url + 'kopitable', data).success(function(data, status) {
             pesan = data;
             console.log(pesan);
+            $scope.loader_work = false
             bootbox.alert(pesan.MSG);
             $state.transitionTo($state.current, $stateParams, {
                 reload: true,
@@ -2632,6 +2636,8 @@ nodeManager.controller('ctrl_data_to_dev', function($rootScope, $scope, CONFIG, 
     $scope.dbschema = '';
     $scope.scale = '';
 
+    $scope.loader_work = false
+
     $scope.FileSelect = function($files, schema, fitur, scale) {
         console.log('INIT');
         console.log($files);
@@ -2661,8 +2667,10 @@ nodeManager.controller('ctrl_data_to_dev', function($rootScope, $scope, CONFIG, 
                     // get upload percentage
                     console.log('percent: ' + parseInt(100.0 * evt.loaded / evt.total));
                     $scope.progress = parseInt(100.0 * evt.loaded / evt.total);
+                    $scope.loader_work = true
                 }).success(function(data, status, headers, config) {
                     $scope.response = data;
+                    $scope.loader_work = false
                     bootbox.alert($scope.response.MSG);
                     $state.go('db_dev');
                     //angular.element(document.getElementById('eWNext'))[0].disabled = false;
@@ -2761,13 +2769,32 @@ nodeManager.controller('SisFrontCtrl', function($rootScope, $scope, CONFIG, $htt
     $scope.sortReverse = false; // set the default sort order
     $scope.cariLayer = ''; // set the default search/filter term
     $scope.sisteminfo = '';
+    $scope.wmslayer = []
 
     $http.get(CONFIG.api_url + 'getWMSlayers').success(function(data) {
-        $scope.wmslayer = data;
+        // $scope.wmslayer = data;
+        for (i = 0, len = data.length, layer_nativename = ''; i < len; i++) {
+            $scope.wmslayer.push({ 'id': i, 'layer_nativename': data[i].layer_nativename, 'layer_title': data[i].layer_name, 'aktif': false, 'pilih': false });
+        };
+        console.log($scope.wmslayer)
     });
 
     $scope.wmsname = {
         wmslayer: []
+    }
+
+    $scope.SimpanLayer = function() {
+        var params = $scope.wmslayer;
+        console.log(params)
+        var data = $.param({
+            json: JSON.stringify({
+                pubdata: params
+            })
+        });
+        $http.post(CONFIG.api_url + 'front_layers/add', data).success(function(data, status) {
+            pesan = data;
+            console.log(pesan);
+        })        
     }
 
     $scope.reloadView = function() {

@@ -1,7 +1,7 @@
 <div id="SisFrontView" ng-app="nodeManager" ng-controller="SisFrontCtrl">
     <div class="panel panel-default">
         <div class="panel-heading clearfix">Layer Default Jelajah Peta (Front-end)
-            <button type="button" class="btn btn-info pull-right"><span class="glyphicon glyphicon-floppy-save"></span> Simpan</button>
+            <button type="button" class="btn btn-info pull-right" ng-click="SimpanLayer()"><span class="glyphicon glyphicon-floppy-save"></span> Simpan</button>
         </div>
         <div class="panel-body">
 
@@ -9,20 +9,24 @@
 
                 <thead>
                     <tr>
-                        <th> </th>
+                        <th>Pilih</th>
                         <th style="width:32px;" <td>Nama Layer</th>
                         <th>Service Name</th>
-                    </tr>
+                        <th>Aktif/Non-Aktif</th </tr>
                 </thead>
 
                 <tbody>
                     <tr ng-repeat="layer in wmslayer">
-                        <td><input type="checkbox" data-checklist-model="wmsname.wmslayer" data-checklist-value="layer"></td>
-                        <td>{{layer.layer_name}}</td>
+                        <td><input type="checkbox" ng-model="layer.pilih"></td>
+                        <td>{{layer.layer_title}}</td>
                         <td>{{layer.layer_nativename}}</td>
+                        <td><input type="checkbox" ng-model="layer.aktif"></td>
                     </tr>
                 </tbody>
 
+
         </div>
+        <!--<pre>{{wmslayer}}</pre>-->
+
     </div>
 </div>
