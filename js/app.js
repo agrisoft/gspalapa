@@ -2785,6 +2785,7 @@ nodeManager.controller('SisFrontCtrl', function($rootScope, $scope, CONFIG, $htt
 
     $scope.SimpanLayer = function() {
         var params = $scope.wmslayer;
+        params.layer_title = encodeURIComponent(params.layer_title)
         console.log(params)
         var data = $.param({
             json: JSON.stringify({
@@ -2794,7 +2795,7 @@ nodeManager.controller('SisFrontCtrl', function($rootScope, $scope, CONFIG, $htt
         $http.post(CONFIG.api_url + 'front_layers/add', data).success(function(data, status) {
             pesan = data;
             console.log(pesan);
-        })        
+        })
     }
 
     $scope.reloadView = function() {

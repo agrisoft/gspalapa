@@ -17,10 +17,10 @@
 
                 <tbody>
                     <tr ng-repeat="layer in wmslayer">
-                        <td><input type="checkbox" ng-model="layer.pilih"></td>
+                        <td><input type="checkbox" ng-model="layer.pilih" ng-checked="layer.pilih"></td>
                         <td>{{layer.layer_title}}</td>
                         <td>{{layer.layer_nativename}}</td>
-                        <td><input type="checkbox" ng-model="layer.aktif"></td>
+                        <td><input type="checkbox" ng-model="layer.aktif" ng-checked="layer.aktif"></td>
                     </tr>
                 </tbody>
 

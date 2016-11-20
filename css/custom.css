@@ -182,6 +182,7 @@ img {
     font-size: 13px;
     position: fixed!important;
     left: -5px;
+    overflow: auto;
 }
 
 .sidemenu_main {
