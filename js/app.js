@@ -158,6 +158,33 @@ nodeManager.controller('LayersCtrl', function($rootScope, $scope, CONFIG, LAYER,
     $scope.init = $rootScope.currentUser;
     console.log($scope.init)
 
+    $scope.theuser = $rootScope.currentUser['user']
+    $scope.curwrk = $rootScope.currentUser['grup']
+    $scope.curgrup = $rootScope.currentUser['kelas']
+    $scope.cekgrup = function(user) {
+        if ($scope.curgrup == 'admin' || user == $scope.curwrk) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    $scope.cekadmin = function() {
+        if ($scope.curgrup == 'admin') {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    $scope.cekuser = function(user) {
+        if ($scope.theuser == user || $scope.curgrup == 'admin') {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
     $http.get(CONFIG.api_url + 'kodeepsg').success(function(data) {
         $scope.kodeepsg = data;
     });
@@ -867,16 +894,27 @@ nodeManager.controller('PenggunaCtrl', function($rootScope, $scope, CONFIG, $htt
     $scope.theuser = $rootScope.currentUser['user']
     console.log($scope.theuser)
 
-    $scope.cekuser = function(user) {
-        if (user == $scope.theuser || $scope.theuser == 'palapa') {
+    $scope.theuser = $rootScope.currentUser['user']
+    $scope.curwrk = $rootScope.currentUser['grup']
+    $scope.curgrup = $rootScope.currentUser['kelas']
+    $scope.cekgrup = function(user) {
+        if ($scope.curgrup == 'admin' || user == $scope.curwrk) {
             return false;
         } else {
             return true;
         }
     }
 
-    $scope.cekdelete = function(user) {
-        if ($scope.theuser == 'palapa') {
+    $scope.cekadmin = function() {
+        if ($scope.curgrup == 'admin') {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    $scope.cekuser = function(user) {
+        if ($scope.theuser == user || $scope.curgrup == 'admin') {
             return false;
         } else {
             return true;

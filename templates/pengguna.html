@@ -65,8 +65,8 @@
                         </td>-->
                         <td style="width: 120px">
                             <div class="btn-group">
-                                <button ng-hide="cekuser(item.name)" type="button" class="btn btn-warning" ng-click="editPengguna.open(item)" tooltip-placement="left" uib-tooltip="Edit password."><span class="glyphicon glyphicon-edit"></span></button>
-                                <button ng-hide="cekdelete(item.name)" type="button" class="btn btn-danger" ng-click="hapusPengguna.open(item)" tooltip-placement="left" uib-tooltip="Hapus pengguna."><span class="glyphicon glyphicon-remove"></span></button>
+                                <button ng-hide="cekgrup(item.groupname)" type="button" class="btn btn-warning" ng-click="editPengguna.open(item)" tooltip-placement="left" uib-tooltip="Edit password."><span class="glyphicon glyphicon-edit"></span></button>
+                                <button ng-hide="cekadmin()" type="button" class="btn btn-danger" ng-click="hapusPengguna.open(item)" tooltip-placement="left" uib-tooltip="Hapus pengguna."><span class="glyphicon glyphicon-remove"></span></button>
                             </div>
                         </td>
                     </tr>
@@ -108,7 +108,7 @@
                     <tr>
                         <td style="width: 150px"><strong>Grup</strong></td>
                         <td>
-                            <select ng-model="penggunaentry.grup" ng-options="g as g for g in grup">
+                            <select ng-model="penggunaentry.grup" ng-options="obj.value as obj.text for obj in grup">
               </select>
                         </td>
                     </tr>
