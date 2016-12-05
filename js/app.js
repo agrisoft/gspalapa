@@ -2830,6 +2830,8 @@ nodeManager.controller('ctrl_data_to_dev', function($rootScope, $scope, CONFIG, 
     $scope.progress_docs = 0;
     $scope.progress_mt = 0;
     $scope.response = '';
+    $scope.nkresponse = '';
+    $scope.nkr = undefined;
     $scope.dbschema = '';
     $scope.scale = '';
     $scope.iden_unik = [];
@@ -2849,6 +2851,12 @@ nodeManager.controller('ctrl_data_to_dev', function($rootScope, $scope, CONFIG, 
     $scope.linkntry.id = ''
 
     $scope.selectedsimpul = [];
+
+    $scope.nstage1 = true;
+    $scope.nstage1_shape = false;
+    $scope.nstage1_berkas = true;
+    $scope.nstage2 = false;
+    $scope.nstage3 = false;
 
     $http.get(CONFIG.api_url + 'kodesimpul').success(function(data) {
         $scope.kodesimpul = data;
@@ -2929,6 +2937,17 @@ nodeManager.controller('ctrl_data_to_dev', function($rootScope, $scope, CONFIG, 
         console.log($scope.dbschema);
     };
 
+    $scope.safeApply = function(fn) {
+        var phase = this.$root.$$phase;
+        if (phase == '$apply' || phase == '$digest') {
+            if (fn && (typeof(fn) === 'function')) {
+                fn();
+            }
+        } else {
+            this.$apply(fn);
+        }
+    };
+
     // create the list of sushi rolls 
     // $http.get(CONFIG.api_url + 'dbdevfeature').success(function(data) {
     //     $scope.features = data;
@@ -2966,16 +2985,20 @@ nodeManager.controller('ctrl_data_to_dev', function($rootScope, $scope, CONFIG, 
                     console.log('percent: ' + parseInt(100.0 * evt.loaded / evt.total));
                     $scope.progress_nk = parseInt(100.0 * evt.loaded / evt.total);
                 }).success(function(data, status, headers, config) {
-                    $scope.response = data;
-                    // angular.element(document.getElementById('eWNext'))[0].disabled = false;
-                    bootbox.alert($scope.response.MSG)
-                        // file is uploaded successfully
-                    console.log(data);
+                    $scope.safeApply(function() {
+                        $scope.nkresponse = data;
+                    });
+                    bootbox.alert($scope.nkresponse.MSG)
+                    $scope.nstage1_shape = true;
+                    $scope.nstage1_berkas = false;
+                    // file is uploaded successfully
+                    console.log($scope.nkresponse);
+                    $scope.nkr = $scope.nkresponse;
                 }).error(function(data, status, headers, config) {
                     // file failed to upload
-                    $scope.response = data;
+                    $scope.nkresponse = data;
                     // angular.element(document.getElementById('eWNext'))[0].disabled = true;
-                    bootbox.alert($scope.response.MSG)
+                    bootbox.alert($scope.nkresponse.MSG)
                     console.log(data);
                 });
             })(i);
@@ -2985,10 +3008,20 @@ nodeManager.controller('ctrl_data_to_dev', function($rootScope, $scope, CONFIG, 
     $scope.MetaFileSelect = function($files, identifier, akses, kodesimpul) {
         console.log('INIT');
         console.log($files);
-        if (akses != 'GOVERNMENT') {
-            kodesimpul = ''
+        console.log($scope.selectedsimpul)
+        if (akses == 'GOVERNMENT') {
+            kode = '';
+            try {
+                for (var p = 0; p < $scope.selectedsimpul.selected.length; p++) {
+                    kode = kode + $scope.selectedsimpul.selected[p].split(',')[0] + ',';
+                }
+                akses = akses + ':' + kode;
+            } catch (err) {
+                akses = 'GOVERNMENT'
+            }
         }
-        //$files: an array of files selected, each file has name, size, and type.
+        console.log(akses)
+            //$files: an array of files selected, each file has name, size, and type.
         for (var i = 0; i < $files.length; i++) {
             var $file = $files[i];
             (function(index) {
@@ -3009,12 +3042,14 @@ nodeManager.controller('ctrl_data_to_dev', function($rootScope, $scope, CONFIG, 
                 }).success(function(data, status, headers, config) {
                     $scope.response = data;
                     bootbox.alert($scope.response.MSG)
+                    $state.go('db_dev');
                         // file is uploaded successfully
                     console.log(data);
                 }).error(function(data, status, headers, config) {
                     // file failed to upload
                     $scope.response = data;
                     bootbox.alert($scope.response.MSG)
+                    $state.go('db_dev');
                     console.log(data);
                 });
             })(i);
@@ -3024,10 +3059,20 @@ nodeManager.controller('ctrl_data_to_dev', function($rootScope, $scope, CONFIG, 
     $scope.KMetaFileSelect = function($files, fitur, identifier, akses, kodesimpul) {
         console.log('INIT');
         console.log($files);
-        if (akses != 'GOVERNMENT') {
-            kodesimpul = ''
+        // console.log($scope.selectedsimpul)
+        if (akses == 'GOVERNMENT') {
+            kode = '';
+            try {
+                for (var p = 0; p < $scope.selectedsimpul.selected.length; p++) {
+                    kode = kode + $scope.selectedsimpul.selected[p].split(',')[0] + ',';
+                }
+                akses = akses + ':' + kode;
+            } catch (err) {
+                akses = 'GOVERNMENT'
+            }
         }
-        //$files: an array of files selected, each file has name, size, and type.
+        console.log(akses)
+            //$files: an array of files selected, each file has name, size, and type.
         for (var i = 0; i < $files.length; i++) {
             var $file = $files[i];
             (function(index) {
@@ -3077,14 +3122,19 @@ nodeManager.controller('ctrl_data_to_dev', function($rootScope, $scope, CONFIG, 
                     console.log('percent: ' + parseInt(100.0 * evt.loaded / evt.total));
                     $scope.progress_docs = parseInt(100.0 * evt.loaded / evt.total);
                 }).success(function(data, status, headers, config) {
-                    $scope.response = data;
-                    bootbox.alert($scope.response.MSG)
-                        // file is uploaded successfully
+                    $scope.safeApply(function() {
+                        $scope.bresponse = data;
+                    });
+                    bootbox.alert($scope.bresponse.MSG)
+                    $scope.nstage1_berkas = true;
+                    $scope.nstage2 = true;
+                    $scope.nstage1 = false;
+                    // file is uploaded successfully
                     console.log(data);
                 }).error(function(data, status, headers, config) {
                     // file failed to upload
-                    $scope.response = data;
-                    bootbox.alert($scope.response.MSG)
+                    $scope.bresponse = data;
+                    bootbox.alert($scope.bresponse.MSG);
                     console.log(data);
                 });
             })(i);
@@ -3092,7 +3142,7 @@ nodeManager.controller('ctrl_data_to_dev', function($rootScope, $scope, CONFIG, 
     }
 
     $scope.publish = function() {
-        params = $scope.response;
+        params = $scope.nkresponse;
         console.log(params);
         try {
             params.ABS = encodeURIComponent($scope.model.layer.layer_abstract);
@@ -3119,12 +3169,14 @@ nodeManager.controller('ctrl_data_to_dev', function($rootScope, $scope, CONFIG, 
             bootbox.alert(pesan.MSG)
             $scope.ingeoserver = true
             console.log($scope.response.ID);
-            console.log($scope.model.layer.layer_nam);
+            // console.log($scope.model.layer.layer_name);
             if ($scope.response.ID == undefined) {
                 $scope.linkntry.id = encodeURIComponent("Ganti teks judul ini.");
             } else {
                 $scope.linkntry.id = encodeURIComponent($scope.response.ID);
             }
+            $scope.nstage2 = false;
+            $scope.nstage3 = true;
             console.log(pesan);
         })
     }

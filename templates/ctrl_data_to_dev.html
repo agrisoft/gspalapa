@@ -92,7 +92,7 @@
                     </table>
                 </uib-tab>
                 <uib-tab index="1" heading="Usulan KUGI">
-                    <table class="table table-hover">
+                    <table ng-show="nstage1" class="table table-hover">
                         <tr>
                             <td style="width: 150px">
                                 <h5>Berkas Paket Data</h5>
@@ -104,7 +104,7 @@
                                 <label class="control-label">Pilih Berkas (ZIP)</label>
                             </td>
                             <td>
-                                <input type="file" ng-file-select="NKFileSelect($files)" multiple required>
+                                <input ng-disabled="nstage1_shape" type="file" ng-file-select="NKFileSelect($files)" multiple required>
                                 <br>
                                 <span style="display: block;" class="progress">
                                      <div style="height: 24px; width:{{progress_nk}}%; background:#CDFF87; text-align: center;" ng-bind="progress_nk + '%'"></div>
@@ -116,7 +116,7 @@
                                 <label class="control-label">Pilih Berkas Pendukung Usulan Skema</label>
                             </td>
                             <td>
-                                <input type="file" ng-file-select="BerkasSelect($files)" multiple required>
+                                <input ng-disabled="nstage1_berkas" type="file" ng-file-select="BerkasSelect($files)" multiple required>
                                 <br>
                                 <span style="display: block;" class="progress">
                                      <div style="height: 24px; width:{{progress_docs}}%; background:#CDFF87; text-align: center;" ng-bind="progress_docs + '%'"></div>
@@ -125,7 +125,7 @@
                         </tr>
                     </table>
 
-                    <form class="form-horizontal" ng-submit="publish()">
+                    <form ng-show="nstage2" class="form-horizontal" ng-submit="publish()">
                         <fieldset>
                             <table class="table table-hover">
                                 <tr>
@@ -136,19 +136,19 @@
                                 </tr>
                                 <tr>
                                     <td style="width: 150px">Layer ID</td>
-                                    <td><input class="form-control input-sm" type="text" style="width: 500" ng-model="model.layer.layer_id" ng-value="response.LID" ng-disabled="true"></td>
+                                    <td><input class="form-control input-sm" type="text" style="width: 500" ng-model="nkresponse.LID" ng-value="nkresponse.LID" ng-disabled="true"></td>
                                 </tr>
                                 <tr>
                                     <td style="width: 150px">Layer Title</td>
-                                    <td><input class="form-control input-sm" type="text" style="width: 500" ng-model="model.layer.layer_name" ng-value="response.TID"></td>
+                                    <td><input class="form-control input-sm" type="text" style="width: 500" ng-model="nkresponse.TID" ng-value="nkresponse.TID"></td>
                                 </tr>
                                 <tr>
                                     <td style="width: 150px">Layer Abstract</td>
-                                    <td><textarea class="form-control input-sm" rows="5" type="text" ng-model="model.layer.layer_abstract" ng-value="response.ID"></textarea></td>
+                                    <td><textarea class="form-control input-sm" rows="5" type="text" ng-model="nkresponse.ID" ng-value="nkresponse.ID"></textarea></td>
                                 </tr>
                                 <tr>
                                     <td style="width: 150px">Kode EPSG</td>
-                                    <td><input type="text" ng-model="model.layer.layer_epsg" ng-value="response.SEPSG" uib-typeahead="kode for kode in kodeepsg | filter:$viewValue | limitTo:8" class="form-control">
+                                    <td><input type="text" ng-model="nkresponse.SEPSG" ng-value="nkresponse.SEPSG" uib-typeahead="kode for kode in kodeepsg | filter:$viewValue | limitTo:8" class="form-control">
                                     </td>
                                 </tr>
                                 <tr>
@@ -159,7 +159,7 @@
                         </fieldset>
                     </form>
 
-                    <table class="table table-hover">
+                    <table ng-show="nstage3" class="table table-hover">
                         <tr>
                             <td style="width: 150px">
                                 <h5>Informasi Metadata</h5>
@@ -185,11 +185,11 @@
                         </tr>
                         <tr>
                             <td style="width: 150px">Identifier Layer</td>
-                            <td><input class="form-control input-sm" type="text" ng-model="model.layer.layer_id" ng-value="response.LID" ng-disabled="true"></td>
+                            <td><input class="form-control input-sm" type="text" ng-model="nkresponse.LID" ng-value="nkresponse.LID" ng-disabled="true"></td>
                         </tr>
                         <tr>
                             <td><label class="control-label">Pilih Berkas (XML)</label> </td>
-                            <td><input ng-disabled="linkntry.akses == ''" type="file" ng-file-select="MetaFileSelect($files, response.LID, linkntry.akses, currentKode)" multiple required>
+                            <td><input ng-disabled="linkntry.akses == ''" type="file" ng-file-select="MetaFileSelect($files, nkresponse.LID, linkntry.akses, currentKode)" multiple required>
                                 <br>
                                 <div>
                                     <span style="display: block;" class="progress">
