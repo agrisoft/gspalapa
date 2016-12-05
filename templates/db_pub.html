@@ -74,9 +74,11 @@
                         <td>{{ feature.dataset }}</td>
                         <td>{{ feature.skala }}</td>
                         <td>{{ feature.identifier }}</td>
-                        <td style="width: 60px">
+                        <td style="width: 180px">
                             <div class="btn-group">
                                 <!--<button type="button" class="btn btn-warning" ng-click="publishKugi.open(feature)"><span class="glyphicon glyphicon-share"></span></button>-->
+                                <button type="button" ng-disabled="cek_meta(feature.identifier)" class="btn btn-success" ng-click="lihatKugi.open(feature)" tooltip-placement="left" uib-tooltip="Raw XML metadata."><span class="glyphicon glyphicon-info-sign"></span></button>
+                                <button type="button" class="btn btn-warning" ng-click="tambahKugi.open(feature)" tooltip-placement="right" uib-tooltip="Unggah/update berkas XML metadata."><span class="glyphicon glyphicon-edit"></span></button>
                                 <button type="button" class="btn btn-danger" ng-click="hapusPub.open(feature)" tooltip-placement="right" uib-tooltip="Hapus dataset dari database Publikasi."><span class="glyphicon glyphicon-remove"></span></button>
                             </div>
                         </td>
@@ -84,6 +86,8 @@
                 </tbody>
 
             </table>
+            <kugi-lihat-dialog model="lihatKugi"></kugi-lihat-dialog>
+            <kugi-tambah-dialog model="tambahKugi"></kugi-tambah-dialog>
             <hapus-pub-dialog model="hapusPub"></hapus-pub-dialog>
         </div>
     </div>

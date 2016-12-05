@@ -1,5 +1,5 @@
 // Configure the main application module.
-var nodeManager = angular.module('nodeManager', ['ngAnimate', 'ngSanitize', 'ui.router', 'ui.bootstrap', 'openlayers-directive', 'nemLogging', 'ngResource', 'base64', 'angularFileUpload', 'angular.filter', 'treasure-overlay-spinner'])
+var nodeManager = angular.module('nodeManager', ['ngAnimate', 'ngSanitize', 'ui.router', 'ui.bootstrap', 'openlayers-directive', 'nemLogging', 'ngResource', 'base64', 'angularFileUpload', 'angular.filter', 'treasure-overlay-spinner', 'listGroup', 'ui.select'])
     /*Constants regarding user login defined here*/
 nodeManager.constant('USER_ROLES', {
         all: '*',
@@ -14,7 +14,7 @@ nodeManager.constant('USER_ROLES', {
         notAuthenticated: 'auth-not-authenticated',
         notAuthorized: 'auth-not-authorized'
     }).constant('CONFIG', {
-        api_url: 'http://localhost:5000/api/',
+        api_url: 'http://localhost:5001/api/',
         gs_url: 'http://192.168.198.133:8080/geoserver/wms'
     }).constant('LAYER', {
         preview: '',
@@ -45,7 +45,7 @@ nodeManager.controller('SideMenuController', function($scope, CONFIG, $http) {
 
     // create the list of sushi rolls 
     $scope.menus = [{
-            title: "Data KUGI",
+            title: "Database",
             action: "#",
             menus: [{
                     title: "Pengembangan (DEV)",
@@ -59,7 +59,7 @@ nodeManager.controller('SideMenuController', function($scope, CONFIG, $http) {
                     action: "#/db_prod",
                     icons: "fa fa-database",
                     tooltip: "Manajemen dataset di database Produksi",
-                    level: "admin"
+                    level: "member"
                 },
                 {
                     title: "Publikasi (PUB)",
@@ -67,12 +67,24 @@ nodeManager.controller('SideMenuController', function($scope, CONFIG, $http) {
                     icons: "fa fa-database",
                     tooltip: "Manajemen dataset di database Publikasi",
                     level: "admin"
-                },
-                {
-                    title: "Publikasi (Servis)",
+                }
+            ]
+        },
+        {
+            title: "Publikasi",
+            action: "#",
+            menus: [{
+                    title: "Publikasi Layer KUGI",
                     action: "#/db_pub_publikasi",
                     icons: "fa fa-globe",
                     tooltip: "Publikasi dataset di database Publikasi ke GeoServer",
+                    level: "member"
+                },
+                {
+                    title: "Layer Spasial",
+                    action: "#/state1",
+                    icons: "fa fa-globe",
+                    tooltip: "Manajemen Layer GeoServer",
                     level: "member"
                 },
                 {
@@ -81,21 +93,9 @@ nodeManager.controller('SideMenuController', function($scope, CONFIG, $http) {
                     icons: "fa fa-file-text",
                     tooltip: "Manajemen metadata dengan skema KUGI",
                     level: "member"
-                }
-            ]
-        },
-        {
-            title: "Data Non-Kugi",
-            action: "#",
-            menus: [{
-                    title: "Data Spasial",
-                    action: "#/state1",
-                    icons: "fa fa-globe",
-                    tooltip: "Manajemen Layer GeoServer",
-                    level: "member"
                 },
                 {
-                    title: "Metadata Non-KUGI",
+                    title: "Metadata Usulan KUGI",
                     action: "#/metalinks",
                     icons: "fa fa-file-text",
                     tooltip: "Manajemen metadata dengan skema Non-KUGI",
@@ -125,6 +125,13 @@ nodeManager.controller('SideMenuController', function($scope, CONFIG, $http) {
                     action: "#/grup",
                     icons: "fa fa-users",
                     tooltip: "Manajemen grup GeoServer",
+                    level: "admin"
+                },
+                {
+                    title: "-- Fitur Grup --",
+                    action: "#/grupfitur",
+                    icons: "fa fa-user",
+                    tooltip: "-- Fitur Grup --",
                     level: "admin"
                 },
                 {
@@ -378,10 +385,12 @@ nodeManager.controller('LayersCtrl', function($rootScope, $scope, CONFIG, LAYER,
             pesan = data;
             bootbox.alert(pesan.MSG)
             $scope.ingeoserver = true
+            console.log($scope.response.ID);
+            console.log($scope.model.layer.layer_nam);
             if ($scope.response.ID == undefined) {
-                $scope.linkntry.id = encodeURIComponent($scope.response.ID);
+                $scope.linkntry.id = encodeURIComponent("Ganti teks judul ini.");
             } else {
-                $scope.linkntry.id = encodeURIComponent($scope.model.layer.layer_name);
+                $scope.linkntry.id = encodeURIComponent($scope.response.ID);
             }
             console.log(pesan);
         })
@@ -1015,8 +1024,9 @@ nodeManager.controller('PenggunaCtrl', function($rootScope, $scope, CONFIG, $htt
             })
         });
         $http.post(CONFIG.api_url + 'users', data).success(function(data, status) {
-            $scope.test = data;
-            console.log($scope.test);
+            pesan = data;
+            bootbox.alert(pesan.MSG)
+            console.log(pesan);
         })
     }
 
@@ -1031,8 +1041,9 @@ nodeManager.controller('PenggunaCtrl', function($rootScope, $scope, CONFIG, $htt
             })
         });
         $http.post(CONFIG.api_url + 'user/edit', data).success(function(data, status) {
-            $scope.test = data;
-            console.log($scope.test);
+            pesan = data;
+            bootbox.alert(pesan.MSG)
+            console.log(pesan);
         });
     }
 
@@ -2008,6 +2019,18 @@ nodeManager.controller('ctrl_dbdev', function($rootScope, $scope, CONFIG, LAYER,
         $scope.loader.loading = false;
     }
 
+    $scope.cek_meta = function(identifier) {
+        if ($scope.metadevlist.indexOf(identifier) === -1) {
+            return true
+        } else {
+            return false
+        }
+    }
+
+    $http.get(CONFIG.api_url + 'cekmeta/metakugi_dev').success(function(data) {
+        $scope.metadevlist = data;
+    });
+
     $scope.reloadView = function() {
         $state.transitionTo($state.current, $stateParams, {
             reload: true,
@@ -2062,13 +2085,54 @@ nodeManager.controller('ctrl_dbdev', function($rootScope, $scope, CONFIG, LAYER,
         this.visible = false;
     };
 
+    var TambahKugiDialogModel = function() {
+        this.visible = false;
+    };
 
+    TambahKugiDialogModel.prototype.open = function(item) {
+        this.item = item;
+        console.log(item);
+        this.visible = true;
+    };
+
+    TambahKugiDialogModel.prototype.close = function() {
+        this.visible = false;
+    };
+
+    var LihatKugiDialogModel = function() {
+        this.visible = false;
+    };
+
+    LihatKugiDialogModel.prototype.open = function(item) {
+        this.item = item;
+        console.log(item);
+        this.visible = true;
+        $http({
+            url: CONFIG.api_url + 'metakugi_dev/view',
+            method: 'GET',
+            params: { identifier: item.identifier }
+        }).success(function(data) {
+            setTimeout(function() {
+                $scope.$apply(function() {
+                    $scope.lihatKugi.item.xml = data
+                });
+            })
+        });
+        // console.log(this.xml)
+    };
+
+    LihatKugiDialogModel.prototype.close = function() {
+        this.visible = false;
+    };
+
+    $scope.tambahKugi = new TambahKugiDialogModel();
+    $scope.lihatKugi = new LihatKugiDialogModel();
     $scope.hapusDevprod = new HapusDevprodDialogModel();
     $scope.eksporDevprod = new EksporDevprodDialogModel();
 
     $scope.eksporDEVPROD = function(item) {
         var params = item;
-        params.source_db = 'palapa_dev'
+        params.source_db = $rootScope.currentUser.grup + '_DEV'
         params.dest_db = 'palapa_prod'
         console.log(params)
         var data = $.param({
@@ -2095,6 +2159,7 @@ nodeManager.controller('ctrl_dbdev', function($rootScope, $scope, CONFIG, LAYER,
         params.fitur = fitur
         params.identifier = identifier
         params.db = db
+        params.grup = $rootScope.currentUser.grup
         console.log(params)
         var data = $.param({
             json: JSON.stringify({
@@ -2102,8 +2167,9 @@ nodeManager.controller('ctrl_dbdev', function($rootScope, $scope, CONFIG, LAYER,
             })
         });
         $http.post(CONFIG.api_url + 'delete_spatial_records', data).success(function(data, status) {
-            $scope.test = data;
-            console.log($scope.test);
+            pesan = data;
+            console.log(pesan);
+            bootbox.alert(pesan.MSG);
             $state.transitionTo($state.current, $stateParams, {
                 reload: true,
                 inherit: false,
@@ -2113,7 +2179,7 @@ nodeManager.controller('ctrl_dbdev', function($rootScope, $scope, CONFIG, LAYER,
     }
 
     // create the list of sushi rolls 
-    $http.get(CONFIG.api_url + 'dbdevisifeature').success(function(data) {
+    $http.get(CONFIG.api_url + 'dbdevisifeature/' + $rootScope.currentUser.grup).success(function(data) {
         $scope.features = data;
     });
 });
@@ -2170,7 +2236,7 @@ nodeManager.directive('hapusDevprodDialog', [function() {
     };
 }]);
 
-nodeManager.controller('ctrl_dbprod', function($scope, CONFIG, $http, $state, $stateParams, $upload, $timeout) {
+nodeManager.controller('ctrl_dbprod', function($rootScope, $scope, CONFIG, $http, $state, $stateParams, $upload, $timeout) {
     $scope.sortType = 'name'; // set the default sort type
     $scope.sortReverse = false; // set the default sort order
     $scope.cariFitur = ''; // set the default search/filter term
@@ -2211,6 +2277,31 @@ nodeManager.controller('ctrl_dbprod', function($scope, CONFIG, $http, $state, $s
         })
     }
 
+    $scope.cek_meta = function(identifier) {
+        if ($scope.metadevlist.indexOf(identifier) === -1) {
+            return true
+        } else {
+            return false
+        }
+    }
+
+    $scope.saverow = function(database, item) {
+        console.log(item)
+        $.fileDownload(CONFIG.api_url + 'savetable/' + database + '/' + item.dataset + '/' + item.feature + '/' + item.identifier)
+            // $http.get(CONFIG.api_url + 'savetable/' + database + '/' + item.dataset + '/' + item.feature + '/' + item.identifier).success(function(data) {
+            //     var anchor = angular.element('<a/>');
+            //     anchor.attr({
+            //         href: 'data:application/gml+xml;charset=utf-8,' + encodeURI(data),
+            //         target: '_blank',
+            //         download: item.feature + '_' + identifier + '.gml'
+            //     })[0].click();
+            // });
+    }
+
+    $http.get(CONFIG.api_url + 'cekmeta/metakugi_prod').success(function(data) {
+        $scope.metadevlist = data;
+    });
+
     var EksporProdpubDialogModel = function() {
         this.visible = false;
     };
@@ -2239,6 +2330,48 @@ nodeManager.controller('ctrl_dbprod', function($scope, CONFIG, $http, $state, $s
         this.visible = false;
     };
 
+    var TambahKugiDialogModel = function() {
+        this.visible = false;
+    };
+
+    TambahKugiDialogModel.prototype.open = function(item) {
+        this.item = item;
+        console.log(item);
+        this.visible = true;
+    };
+
+    TambahKugiDialogModel.prototype.close = function() {
+        this.visible = false;
+    };
+
+    var LihatKugiDialogModel = function() {
+        this.visible = false;
+    };
+
+    LihatKugiDialogModel.prototype.open = function(item) {
+        this.item = item;
+        console.log(item);
+        this.visible = true;
+        $http({
+            url: CONFIG.api_url + 'metakugi_prod/view',
+            method: 'GET',
+            params: { identifier: item.identifier }
+        }).success(function(data) {
+            setTimeout(function() {
+                $scope.$apply(function() {
+                    $scope.lihatKugi.item.xml = data
+                });
+            })
+        });
+        // console.log(this.xml)
+    };
+
+    LihatKugiDialogModel.prototype.close = function() {
+        this.visible = false;
+    };
+
+    $scope.tambahKugi = new TambahKugiDialogModel();
+    $scope.lihatKugi = new LihatKugiDialogModel();
 
     $scope.hapusProdpub = new HapusProdpubDialogModel();
     $scope.eksporProdpub = new EksporProdpubDialogModel();
@@ -2273,6 +2406,7 @@ nodeManager.controller('ctrl_dbprod', function($scope, CONFIG, $http, $state, $s
         params.fitur = fitur
         params.identifier = identifier
         params.db = db
+        params.grup = $rootScope.currentUser.grup
         console.log(params)
         var data = $.param({
             json: JSON.stringify({
@@ -2280,8 +2414,9 @@ nodeManager.controller('ctrl_dbprod', function($scope, CONFIG, $http, $state, $s
             })
         });
         $http.post(CONFIG.api_url + 'delete_spatial_records', data).success(function(data, status) {
-            $scope.test = data;
-            console.log($scope.test);
+            pesan = data;
+            console.log(pesan);
+            bootbox.alert(pesan.MSG);
             $state.transitionTo($state.current, $stateParams, {
                 reload: true,
                 inherit: false,
@@ -2348,7 +2483,7 @@ nodeManager.directive('hapusProdpubDialog', [function() {
     };
 }]);
 
-nodeManager.controller('ctrl_dbpub', function($scope, CONFIG, $http, $state, $stateParams, $upload, $timeout) {
+nodeManager.controller('ctrl_dbpub', function($rootScope, $scope, CONFIG, $http, $state, $stateParams, $upload, $timeout) {
     $scope.sortType = 'name'; // set the default sort type
     $scope.sortReverse = false; // set the default sort order
     $scope.cariFitur = ''; // set the default search/filter term
@@ -2389,6 +2524,18 @@ nodeManager.controller('ctrl_dbpub', function($scope, CONFIG, $http, $state, $st
         })
     }
 
+    $scope.cek_meta = function(identifier) {
+        if ($scope.metadevlist.indexOf(identifier) === -1) {
+            return true
+        } else {
+            return false
+        }
+    }
+
+    $http.get(CONFIG.api_url + 'cekmeta/metakugi').success(function(data) {
+        $scope.metadevlist = data;
+    });
+
     var PublishKugiDialogModel = function() {
         this.visible = false;
     };
@@ -2417,6 +2564,48 @@ nodeManager.controller('ctrl_dbpub', function($scope, CONFIG, $http, $state, $st
         this.visible = false;
     };
 
+    var TambahKugiDialogModel = function() {
+        this.visible = false;
+    };
+
+    TambahKugiDialogModel.prototype.open = function(item) {
+        this.item = item;
+        console.log(item);
+        this.visible = true;
+    };
+
+    TambahKugiDialogModel.prototype.close = function() {
+        this.visible = false;
+    };
+
+    var LihatKugiDialogModel = function() {
+        this.visible = false;
+    };
+
+    LihatKugiDialogModel.prototype.open = function(item) {
+        this.item = item;
+        console.log(item);
+        this.visible = true;
+        $http({
+            url: CONFIG.api_url + 'metakugi/view',
+            method: 'GET',
+            params: { identifier: item.identifier }
+        }).success(function(data) {
+            setTimeout(function() {
+                $scope.$apply(function() {
+                    $scope.lihatKugi.item.xml = data
+                });
+            })
+        });
+        // console.log(this.xml)
+    };
+
+    LihatKugiDialogModel.prototype.close = function() {
+        this.visible = false;
+    };
+
+    $scope.tambahKugi = new TambahKugiDialogModel();
+    $scope.lihatKugi = new LihatKugiDialogModel();
 
     $scope.hapusPub = new HapusPubDialogModel();
     $scope.publishKugi = new PublishKugiDialogModel();
@@ -2427,6 +2616,7 @@ nodeManager.controller('ctrl_dbpub', function($scope, CONFIG, $http, $state, $st
         params.fitur = fitur
         params.identifier = identifier
         params.db = db
+        params.grup = $rootScope.currentUser.grup
         console.log(params)
         var data = $.param({
             json: JSON.stringify({
@@ -2434,8 +2624,9 @@ nodeManager.controller('ctrl_dbpub', function($scope, CONFIG, $http, $state, $st
             })
         });
         $http.post(CONFIG.api_url + 'delete_spatial_records', data).success(function(data, status) {
-            $scope.test = data;
-            console.log($scope.test);
+            pesan = data;
+            console.log(pesan);
+            bootbox.alert(pesan.MSG);
             $state.transitionTo($state.current, $stateParams, {
                 reload: true,
                 inherit: false,
@@ -2625,18 +2816,48 @@ nodeManager.directive('publishGeoKugiDialog', [function() {
     };
 }]);
 
-nodeManager.controller('ctrl_data_to_dev', function($rootScope, $scope, CONFIG, $http, $state, $stateParams, $upload, $timeout) {
+nodeManager.controller('ctrl_data_to_dev', function($rootScope, $scope, CONFIG, $http, $state, $stateParams, $upload, $timeout, $interval) {
     $scope.sortType = 'name'; // set the default sort type
     $scope.sortReverse = false; // set the default sort order
     $scope.cariFitur = ''; // set the default search/filter term
 
     $scope.upload = [];
+    $scope.upload_nk = []
+    $scope.upload_docs = [];
+    $scope.upload_mt = []
     $scope.progress = 0;
+    $scope.progress_nk = 0;
+    $scope.progress_docs = 0;
+    $scope.progress_mt = 0;
     $scope.response = '';
     $scope.dbschema = '';
     $scope.scale = '';
+    $scope.iden_unik = [];
 
+    $scope.multikode = [];
+    $scope.stagekugi = 0;
+    $scope.stagenonkugi = 0;
+
+    $scope.currentGrup = $rootScope.currentUser.grup;
+    $scope.currentKode = $rootScope.kodesimpul;
     $scope.loader_work = false
+
+    $scope.linkntry = {}
+    $scope.linkntry.name = ''
+    $scope.linkntry.enabled = ''
+    $scope.linkntry.akses = ''
+    $scope.linkntry.id = ''
+
+    $scope.selectedsimpul = [];
+
+    $http.get(CONFIG.api_url + 'kodesimpul').success(function(data) {
+        $scope.kodesimpul = data;
+    });
+
+    $http.get(CONFIG.api_url + 'kodeepsg').success(function(data) {
+        $scope.kodeepsg = data;
+    });
+
 
     $scope.FileSelect = function($files, schema, fitur, scale) {
         console.log('INIT');
@@ -2670,9 +2891,10 @@ nodeManager.controller('ctrl_data_to_dev', function($rootScope, $scope, CONFIG, 
                     $scope.loader_work = true
                 }).success(function(data, status, headers, config) {
                     $scope.response = data;
+                    $scope.iden_unik = $scope.response['IDEN']
                     $scope.loader_work = false
                     bootbox.alert($scope.response.MSG);
-                    $state.go('db_dev');
+                    // $state.go('db_dev');
                     //angular.element(document.getElementById('eWNext'))[0].disabled = false;
                     // file is uploaded successfully
                     console.log(data);
@@ -2708,9 +2930,206 @@ nodeManager.controller('ctrl_data_to_dev', function($rootScope, $scope, CONFIG, 
     };
 
     // create the list of sushi rolls 
-    $http.get(CONFIG.api_url + 'dbdevfeature').success(function(data) {
+    // $http.get(CONFIG.api_url + 'dbdevfeature').success(function(data) {
+    //     $scope.features = data;
+    // });
+
+    $http.get(CONFIG.api_url + 'gruponlyfitur/' + $scope.currentGrup).success(function(data) {
         $scope.features = data;
     });
+
+    $scope.NKFileSelect = function($files) {
+        console.log('INIT');
+        console.log($files);
+        //$files: an array of files selected, each file has name, size, and type.
+        for (var i = 0; i < $files.length; i++) {
+            var $file = $files[i];
+            (function(index) {
+                var params = {}
+                params.USER = $rootScope.currentUser['user']
+                params.GRUP = $rootScope.currentUser['grup']
+                params.KODESIMPUL = $rootScope.kodesimpul
+                var dataparam = $.param({
+                    json: JSON.stringify({
+                        pubdata: params
+                    })
+                });
+                console.log(params)
+                $scope.upload_nk[index] = $upload.upload({
+                    url: CONFIG.api_url + 'upload', // webapi url
+                    method: "POST",
+                    // data: { fileUploadObj: $scope.fileUploadObj },
+                    file: $file,
+                    params: params
+                }).progress(function(evt) {
+                    // get upload percentage
+                    console.log('percent: ' + parseInt(100.0 * evt.loaded / evt.total));
+                    $scope.progress_nk = parseInt(100.0 * evt.loaded / evt.total);
+                }).success(function(data, status, headers, config) {
+                    $scope.response = data;
+                    // angular.element(document.getElementById('eWNext'))[0].disabled = false;
+                    bootbox.alert($scope.response.MSG)
+                        // file is uploaded successfully
+                    console.log(data);
+                }).error(function(data, status, headers, config) {
+                    // file failed to upload
+                    $scope.response = data;
+                    // angular.element(document.getElementById('eWNext'))[0].disabled = true;
+                    bootbox.alert($scope.response.MSG)
+                    console.log(data);
+                });
+            })(i);
+        }
+    }
+
+    $scope.MetaFileSelect = function($files, identifier, akses, kodesimpul) {
+        console.log('INIT');
+        console.log($files);
+        if (akses != 'GOVERNMENT') {
+            kodesimpul = ''
+        }
+        //$files: an array of files selected, each file has name, size, and type.
+        for (var i = 0; i < $files.length; i++) {
+            var $file = $files[i];
+            (function(index) {
+                $scope.upload_mt[index] = $upload.upload({
+                    url: CONFIG.api_url + 'meta/link', // webapi url
+                    method: "POST",
+                    // data: { fileUploadObj: $scope.fileUploadObj },
+                    file: $file,
+                    params: {
+                        identifier: identifier,
+                        akses: akses,
+                        kodesimpul: kodesimpul
+                    }
+                }).progress(function(evt) {
+                    // get upload percentage
+                    console.log('percent: ' + parseInt(100.0 * evt.loaded / evt.total));
+                    $scope.progress_mt = parseInt(100.0 * evt.loaded / evt.total);
+                }).success(function(data, status, headers, config) {
+                    $scope.response = data;
+                    bootbox.alert($scope.response.MSG)
+                        // file is uploaded successfully
+                    console.log(data);
+                }).error(function(data, status, headers, config) {
+                    // file failed to upload
+                    $scope.response = data;
+                    bootbox.alert($scope.response.MSG)
+                    console.log(data);
+                });
+            })(i);
+        }
+    }
+
+    $scope.KMetaFileSelect = function($files, fitur, identifier, akses, kodesimpul) {
+        console.log('INIT');
+        console.log($files);
+        if (akses != 'GOVERNMENT') {
+            kodesimpul = ''
+        }
+        //$files: an array of files selected, each file has name, size, and type.
+        for (var i = 0; i < $files.length; i++) {
+            var $file = $files[i];
+            (function(index) {
+                $scope.upload_mt[index] = $upload.upload({
+                    url: CONFIG.api_url + 'metakugi/link', // webapi url
+                    method: "POST",
+                    // data: { fileUploadObj: $scope.fileUploadObj },
+                    file: $file,
+                    params: { identifier: identifier, akses: akses, skema: $scope.dbschema, fitur: fitur, kodesimpul: kodesimpul }
+                }).progress(function(evt) {
+                    // get upload percentage
+                    console.log('percent: ' + parseInt(100.0 * evt.loaded / evt.total));
+                    // $scope.progress_mt = parseInt(100.0 * evt.loaded / evt.total);
+                }).success(function(data, status, headers, config) {
+                    $scope.response = data;
+                    bootbox.alert($scope.response.MSG)
+                        // file is uploaded successfully
+                    console.log(data);
+                }).error(function(data, status, headers, config) {
+                    // file failed to upload
+                    $scope.response = data;
+                    bootbox.alert($scope.response.MSG)
+                    console.log(data);
+                });
+            })(i);
+        }
+    }
+
+    $scope.testsmp = function(selectedsimpul) {
+        console.log(selectedsimpul)
+    }
+
+    $scope.BerkasSelect = function($files) {
+        console.log('INIT');
+        console.log($files);
+        //$files: an array of files selected, each file has name, size, and type.
+        for (var i = 0; i < $files.length; i++) {
+            var $file = $files[i];
+            (function(index) {
+                $scope.upload_docs[index] = $upload.upload({
+                    url: CONFIG.api_url + 'docs/link', // webapi url
+                    method: "POST",
+                    // data: { fileUploadObj: $scope.fileUploadObj },
+                    file: $file
+                }).progress(function(evt) {
+                    // get upload percentage
+                    console.log('percent: ' + parseInt(100.0 * evt.loaded / evt.total));
+                    $scope.progress_docs = parseInt(100.0 * evt.loaded / evt.total);
+                }).success(function(data, status, headers, config) {
+                    $scope.response = data;
+                    bootbox.alert($scope.response.MSG)
+                        // file is uploaded successfully
+                    console.log(data);
+                }).error(function(data, status, headers, config) {
+                    // file failed to upload
+                    $scope.response = data;
+                    bootbox.alert($scope.response.MSG)
+                    console.log(data);
+                });
+            })(i);
+        }
+    }
+
+    $scope.publish = function() {
+        params = $scope.response;
+        console.log(params);
+        try {
+            params.ABS = encodeURIComponent($scope.model.layer.layer_abstract);
+            if (params.ID == undefined) {
+                params.ID = encodeURIComponent(params.ID);
+            } else {
+                params.ID = encodeURIComponent($scope.model.layer.layer_name);
+            }
+
+        } catch (e) {
+            params.ABS = '';
+            //params.ID = encodeURIComponent($scope.model.layer.layer_name);
+        }
+        params.USER = $rootScope.currentUser['user']
+        params.GRUP = $rootScope.currentUser['grup']
+            // params = params.concat($scope.model.layer.layer_abstract);
+        var data = $.param({
+            json: JSON.stringify({
+                pubdata: params
+            })
+        });
+        $http.post(CONFIG.api_url + 'publish', data).success(function(data, status) {
+            pesan = data;
+            bootbox.alert(pesan.MSG)
+            $scope.ingeoserver = true
+            console.log($scope.response.ID);
+            console.log($scope.model.layer.layer_nam);
+            if ($scope.response.ID == undefined) {
+                $scope.linkntry.id = encodeURIComponent("Ganti teks judul ini.");
+            } else {
+                $scope.linkntry.id = encodeURIComponent($scope.response.ID);
+            }
+            console.log(pesan);
+        })
+    }
+
+
 });
 
 nodeManager.controller('SistemCtrl', function($rootScope, $scope, CONFIG, $http, $state, $stateParams, $upload, $timeout) {
@@ -2754,6 +3173,7 @@ nodeManager.controller('SistemCtrl', function($rootScope, $scope, CONFIG, $http,
         });
         $http.post(CONFIG.api_url + 'sisteminfo/edit', data).success(function(data, status) {
             $scope.test = data;
+            bootbox.alert($scope.response.MSG)
             console.log($scope.test);
         })
     }
@@ -2769,7 +3189,12 @@ nodeManager.controller('SisFrontCtrl', function($rootScope, $scope, CONFIG, $htt
     $scope.sortReverse = false; // set the default sort order
     $scope.cariLayer = ''; // set the default search/filter term
     $scope.sisteminfo = '';
-    $scope.wmslayer = []
+    $scope.wmslayer = [];
+
+    $http.get(CONFIG.api_url + 'front_layers').success(function(data) {
+        $scope.selectedlayers = data;
+        console.log(data)
+    });
 
     $http.get(CONFIG.api_url + 'getWMSlayers').success(function(data) {
         // $scope.wmslayer = data;
@@ -2783,6 +3208,18 @@ nodeManager.controller('SisFrontCtrl', function($rootScope, $scope, CONFIG, $htt
         wmslayer: []
     }
 
+    $scope.ceklayer = function(layer) {
+        for (i = 0, len = $scope.selectedlayers.length, layer_nativename = ''; i < len; i++) {
+            for (o = 0, leno = $scope.wmslayer.length; o < leno; o++) {
+                if ($scope.selectedlayers[i]['layer_nativename'] == layer) {
+                    return true
+                } else {
+                    return false
+                }
+            }
+        }
+    }
+
     $scope.SimpanLayer = function() {
         var params = $scope.wmslayer;
         params.layer_title = encodeURIComponent(params.layer_title)
@@ -2794,6 +3231,7 @@ nodeManager.controller('SisFrontCtrl', function($rootScope, $scope, CONFIG, $htt
         });
         $http.post(CONFIG.api_url + 'front_layers/add', data).success(function(data, status) {
             pesan = data;
+            bootbox.alert(pesan.MSG)
             console.log(pesan);
         })
     }
@@ -2805,4 +3243,110 @@ nodeManager.controller('SisFrontCtrl', function($rootScope, $scope, CONFIG, $htt
             notify: true
         });
     }
+});
+
+nodeManager.controller('GrupFiturCtrl', function($rootScope, $scope, CONFIG, $http, $state, $stateParams, $upload, $timeout) {
+    $scope.sortType = 'name'; // set the default sort type
+    $scope.sortReverse = false; // set the default sort order
+    $scope.cariLayer = ''; // set the default search/filter term
+    // $scope.listfitur = '';
+    $scope.grupfitur = ['List', 'Fitur'];
+    $scope.selectedfitur = [];
+
+    $scope.reloadView = function() {
+        $state.transitionTo($state.current, $stateParams, {
+            reload: true,
+            inherit: false,
+            notify: true
+        });
+    }
+
+    $scope.GetGrupFitur = function(grup) {
+        console.log(grup)
+        $http.get(CONFIG.api_url + 'grupfitur/' + grup).success(function(data) {
+            $scope.selectedfitur = data;
+        });
+    };
+
+    $scope.GetSkala = function() {
+        $scope.strSkala = document.getElementById("skala").value;
+        var skalaset = document.getElementById("skala")
+        $scope.scale = skalaset.options[skalaset.selectedIndex].text;
+    };
+
+    $scope.GetKategori = function() {
+        $scope.strKategori = document.getElementById("kategori").value;
+        var kategoriset = document.getElementById("kategori")
+        $scope.dbschema = kategoriset.options[kategoriset.selectedIndex].text;
+        console.log($scope.dbschema);
+        $http.get(CONFIG.api_url + 'dbkugilist/' + $scope.dbschema).success(function(data) {
+            $scope.listfitur = data;
+            setTimeout(function() {
+                $scope.$apply(function() {
+                    $scope.grupfitur = $scope.listfitur.sort()
+                    console.log("A", $scope.grupfitur);
+                });
+            })
+            console.log("B", $scope.grupfitur);
+        });
+        console.log("C", $scope.grupfitur);
+    };
+
+    // create the list of sushi rolls 
+    $http.get(CONFIG.api_url + 'dbdevfeature').success(function(data) {
+        $scope.features = data;
+    });
+
+    $http.get(CONFIG.api_url + 'group/list').success(function(data) {
+        grup = []
+        for (o = 0, leno = data.length; o < leno; o++) {
+            grup.push(data[o].name)
+        }
+        console.log(grup)
+        $scope.groups = grup
+    });
+    console.log($scope.groups)
+
+    $scope.filterable = {
+        placeholder: 'Filter fitur...'
+    };
+
+    $scope.klikselect = function(fitur, grup) {
+        if ($scope.selectedfitur.length == 0) {
+            $scope.selectedfitur.push({ groupname: grup, fitur: fitur, skema: $scope.dbschema, skala: $scope.scale })
+        } else {
+            fiturs = []
+            for (i = 0, len = $scope.selectedfitur.length; i < len; i++) {
+                fiturs.push($scope.selectedfitur[i].fitur)
+            }
+            if (fiturs.indexOf(fitur) === -1) {
+                console.log("FALSE", fitur)
+                $scope.selectedfitur.push({ groupname: grup, fitur: fitur, skema: $scope.dbschema, skala: $scope.scale })
+            } else {
+                console.log("TRUE", fitur)
+            }
+        }
+        // $scope.selectedfitur.push(fitur)
+        console.log($scope.selectedfitur)
+    }
+
+    $scope.klikdelete = function(index) {
+        $scope.selectedfitur.splice(index, 1);
+    }
+
+    $scope.grupfitur_simpan = function(grup) {
+        var params = $scope.selectedfitur;
+        console.log(params)
+        var data = $.param({
+            json: JSON.stringify({
+                pubdata: params
+            })
+        });
+        $http.post(CONFIG.api_url + 'grupfitur/simpan/' + grup, data).success(function(data, status) {
+            pesan = data;
+            bootbox.alert(pesan.MSG)
+            console.log(pesan);
+        })
+    }
+
 });

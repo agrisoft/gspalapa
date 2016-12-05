@@ -87,9 +87,9 @@
                         <td>
                             <div class="btn-group">
                                 <button type="button" class="btn btn-info" ng-click="infoLayer.open(layer)"><span class="glyphicon glyphicon-info-sign" tooltip-placement="left" uib-tooltip="Informasi"></span></button>
-                                <button ng-hide="cekgrup(layer.workspace)" type="button" class="btn btn-warning" ng-disabled="{{cekowner(layer.workspace,init.grup,init.user) ? 'true' : 'false'}}" ng-click="editLayer.open(layer)" tooltip-placement="top" uib-tooltip="Edit"><span class="glyphicon glyphicon-edit"></span></button>
-                                <button ng-hide="cekadmin()" type="button" class="btn btn-warning" ng-disabled="{{cekowner(layer.workspace,init.grup,init.user) ? 'true' : 'false'}}" ng-click="advLayer.open(layer)" tooltip-placement="top" uib-tooltip="Publikasi"><span class="glyphicon glyphicon-check"></span></button>
-                                <button ng-hide="cekadmin()" type="button" class="btn btn-danger" ng-disabled="{{cekowner(layer.workspace,init.grup,init.user) ? 'true' : 'false'}}" ng-click="hapusLayer.open(layer)" tooltip-placement="right" uib-tooltip="Hapus"><span class="glyphicon glyphicon-remove"></span></button>
+                                <button ng-hide="cekgrup(layer.workspace)" type="button" class="btn btn-warning" ng-disabled="cekgrup(layer.workspace)" ng-click="editLayer.open(layer)" tooltip-placement="top" uib-tooltip="Edit"><span class="glyphicon glyphicon-edit"></span></button>
+                                <button ng-hide="cekadmin()" type="button" class="btn btn-warning" ng-disabled="cekadmin()" ng-click="advLayer.open(layer)" tooltip-placement="top" uib-tooltip="Publikasi"><span class="glyphicon glyphicon-check"></span></button>
+                                <button ng-hide="cekadmin()" type="button" class="btn btn-danger" ng-disabled="cekadmin()" ng-click="hapusLayer.open(layer)" tooltip-placement="right" uib-tooltip="Hapus"><span class="glyphicon glyphicon-remove"></span></button>
                             </div>
                         </td>
                     </tr>

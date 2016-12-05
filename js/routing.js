@@ -24,7 +24,7 @@ angular.module('nodeManager').config(['$stateProvider', '$urlRouterProvider', 'U
                 url: '/db_prod',
                 templateUrl: 'templates/db_prod.html',
                 data: {
-                    authorizedRoles: [USER_ROLES.admin]
+                    authorizedRoles: [USER_ROLES.admin, USER_ROLES.editor]
                 }
             })
             .state('db_pub', {
@@ -142,6 +142,13 @@ angular.module('nodeManager').config(['$stateProvider', '$urlRouterProvider', 'U
             .state('sistemState', {
                 url: '/sistem',
                 templateUrl: 'templates/sistem.html',
+                data: {
+                    authorizedRoles: [USER_ROLES.admin]
+                }
+            })
+            .state('grupFitur', {
+                url: '/grupfitur',
+                templateUrl: 'templates/grupfitur.html',
                 data: {
                     authorizedRoles: [USER_ROLES.admin]
                 }
