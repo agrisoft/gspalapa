@@ -1374,6 +1374,12 @@ nodeManager.controller('MetalinksCtrl', function($rootScope, $scope, CONFIG, $ht
         $scope.grup = data;
     });
 
+    $scope.selectedsimpul = [];
+
+    $http.get(CONFIG.api_url + 'kodesimpul').success(function(data) {
+        $scope.kodesimpul = data;
+    });
+
     var TambahLinkDialogModel = function() {
         this.visible = false;
     };
@@ -1515,6 +1521,17 @@ nodeManager.controller('MetalinksCtrl', function($rootScope, $scope, CONFIG, $ht
     $scope.FileSelect = function($files, identifier, akses) {
         console.log('INIT');
         console.log($files);
+        if (akses == 'GOVERNMENT') {
+            kode = '';
+            try {
+                for (var p = 0; p < $scope.selectedsimpul.selected.length; p++) {
+                    kode = kode + $scope.selectedsimpul.selected[p].split(',')[0] + ',';
+                }
+                akses = akses + ':' + kode;
+            } catch (err) {
+                akses = 'GOVERNMENT'
+            }
+        }
         //$files: an array of files selected, each file has name, size, and type.
         for (var i = 0; i < $files.length; i++) {
             var $file = $files[i];
@@ -1692,12 +1709,19 @@ nodeManager.controller('MetakugiCtrl', function($rootScope, $scope, CONFIG, $htt
         $scope.grup = data;
     });
 
+    $scope.selectedsimpul = [];
+
+    $http.get(CONFIG.api_url + 'kodesimpul').success(function(data) {
+        $scope.kodesimpul = data;
+    });
+
     var TambahKugiDialogModel = function() {
         this.visible = false;
     };
 
     TambahKugiDialogModel.prototype.open = function(item) {
         this.item = item;
+        this.item.db = 'pub';
         console.log(item);
         this.visible = true;
     };
@@ -1789,7 +1813,7 @@ nodeManager.controller('MetakugiCtrl', function($rootScope, $scope, CONFIG, $htt
                 pubdata: params
             })
         });
-        $http.post(CONFIG.api_url + 'metakugi/link', data).success(function(data, status) {
+        $http.post(CONFIG.api_url + 'metakugi/link/' + param.db, data).success(function(data, status) {
             $scope.test = data;
             console.log($scope.test);
         })
@@ -1829,19 +1853,30 @@ nodeManager.controller('MetakugiCtrl', function($rootScope, $scope, CONFIG, $htt
         })
     }
 
-    $scope.FileSelect = function($files, identifier, akses, skema, fitur) {
+    $scope.FileSelect = function($files, identifier, akses, skema, fitur, db) {
         console.log('INIT');
         console.log($files);
+        if (akses == 'GOVERNMENT') {
+            kode = '';
+            try {
+                for (var p = 0; p < $scope.selectedsimpul.selected.length; p++) {
+                    kode = kode + $scope.selectedsimpul.selected[p].split(',')[0] + ',';
+                }
+                akses = akses + ':' + kode;
+            } catch (err) {
+                akses = 'GOVERNMENT'
+            }
+        }
         //$files: an array of files selected, each file has name, size, and type.
         for (var i = 0; i < $files.length; i++) {
             var $file = $files[i];
             (function(index) {
                 $scope.upload[index] = $upload.upload({
-                    url: CONFIG.api_url + 'metakugi/link', // webapi url
+                    url: CONFIG.api_url + 'metakugi/link/' + db, // webapi url
                     method: "POST",
                     // data: { fileUploadObj: $scope.fileUploadObj },
                     file: $file,
-                    params: { identifier: identifier, akses: akses, skema: skema, fitur: fitur }
+                    params: { identifier: identifier, akses: akses, skema: skema, fitur: fitur, workspace: $scope.curwrk }
                 }).progress(function(evt) {
                     // get upload percentage
                     console.log('percent: ' + parseInt(100.0 * evt.loaded / evt.total));
@@ -2091,6 +2126,7 @@ nodeManager.controller('ctrl_dbdev', function($rootScope, $scope, CONFIG, LAYER,
 
     TambahKugiDialogModel.prototype.open = function(item) {
         this.item = item;
+        this.item.db = 'dev';
         console.log(item);
         this.visible = true;
     };
@@ -2336,6 +2372,7 @@ nodeManager.controller('ctrl_dbprod', function($rootScope, $scope, CONFIG, $http
 
     TambahKugiDialogModel.prototype.open = function(item) {
         this.item = item;
+        this.item.db = 'prod';
         console.log(item);
         this.visible = true;
     };
@@ -2570,6 +2607,7 @@ nodeManager.controller('ctrl_dbpub', function($rootScope, $scope, CONFIG, $http,
 
     TambahKugiDialogModel.prototype.open = function(item) {
         this.item = item;
+        this.item.db = 'pub';
         console.log(item);
         this.visible = true;
     };
@@ -2850,13 +2888,13 @@ nodeManager.controller('ctrl_data_to_dev', function($rootScope, $scope, CONFIG, 
     $scope.linkntry.akses = ''
     $scope.linkntry.id = ''
 
-    $scope.selectedsimpul = [];
-
     $scope.nstage1 = true;
     $scope.nstage1_shape = false;
     $scope.nstage1_berkas = true;
     $scope.nstage2 = false;
     $scope.nstage3 = false;
+
+    $scope.selectedsimpul = [];
 
     $http.get(CONFIG.api_url + 'kodesimpul').success(function(data) {
         $scope.kodesimpul = data;
@@ -3043,7 +3081,7 @@ nodeManager.controller('ctrl_data_to_dev', function($rootScope, $scope, CONFIG, 
                     $scope.response = data;
                     bootbox.alert($scope.response.MSG)
                     $state.go('db_dev');
-                        // file is uploaded successfully
+                    // file is uploaded successfully
                     console.log(data);
                 }).error(function(data, status, headers, config) {
                     // file failed to upload
@@ -3077,7 +3115,7 @@ nodeManager.controller('ctrl_data_to_dev', function($rootScope, $scope, CONFIG, 
             var $file = $files[i];
             (function(index) {
                 $scope.upload_mt[index] = $upload.upload({
-                    url: CONFIG.api_url + 'metakugi/link', // webapi url
+                    url: CONFIG.api_url + 'metakugi/link/dev', // webapi url
                     method: "POST",
                     // data: { fileUploadObj: $scope.fileUploadObj },
                     file: $file,
@@ -3248,7 +3286,7 @@ nodeManager.controller('SisFrontCtrl', function($rootScope, $scope, CONFIG, $htt
         console.log(data)
     });
 
-    $http.get(CONFIG.api_url + 'getWMSlayers').success(function(data) {
+    $http.get(CONFIG.api_url + 'getWMSlayers', { cache: true}).success(function(data) {
         // $scope.wmslayer = data;
         for (i = 0, len = data.length, layer_nativename = ''; i < len; i++) {
             $scope.wmslayer.push({ 'id': i, 'layer_nativename': data[i].layer_nativename, 'layer_title': data[i].layer_name, 'aktif': false, 'pilih': false });

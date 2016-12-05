@@ -16,7 +16,15 @@
 							<option value='PUBLIC'>PUBLIC</option>
 							<option value='GOVERNMENT'>GOVERNMENT</option>
 							<option value='PRIVATE'>PRIVATE</option>
-						</select></td>
+						</select>
+                            <br>
+                            <ui-select ng-model="selectedsimpul.selected" multiple theme="bootstrap" close-on-select="false" title="Pilih Simpul" ng-hide="linkntry.akses != 'GOVERNMENT'">
+                                <ui-select-match>{{$item}}</ui-select-match>
+                                <ui-select-choices repeat="state in kodesimpul | filter:$select.search">
+                                    {{state}}
+                                </ui-select-choices>
+                            </ui-select>
+                        </td>
                     </tr>
                     <tr>
                         <td><label class="control-label">Pilih Berkas (XML)</label></td>
