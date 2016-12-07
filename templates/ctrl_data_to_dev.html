@@ -116,12 +116,16 @@
                                 <label class="control-label">Pilih Berkas Pendukung Usulan Skema</label>
                             </td>
                             <td>
-                                <input ng-disabled="nstage1_berkas" type="file" ng-file-select="BerkasSelect($files)" multiple required>
+                                <input type="file" ng-file-select="BerkasSelect($files)" multiple required>
                                 <br>
                                 <span style="display: block;" class="progress">
                                      <div style="height: 24px; width:{{progress_docs}}%; background:#CDFF87; text-align: center;" ng-bind="progress_docs + '%'"></div>
                                 </span>
                             </td>
+                        </tr>
+                        <tr>
+                            <td><button ng-disabled="nstage1_berkas" class="btn btn-success" ng-click="stage2()">Lanjut</button></td>
+                            <td></td>
                         </tr>
                     </table>
 

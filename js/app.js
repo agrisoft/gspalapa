@@ -192,7 +192,7 @@ nodeManager.controller('LayersCtrl', function($rootScope, $scope, CONFIG, LAYER,
         }
     }
 
-    $http.get(CONFIG.api_url + 'kodeepsg').success(function(data) {
+    $http.get(CONFIG.api_url + 'kodeepsg', { cache: true }).success(function(data) {
         $scope.kodeepsg = data;
     });
 
@@ -783,7 +783,7 @@ nodeManager.controller('StylesCtrl', function($scope, CONFIG, $http, $state, $st
             });
         }
         // create the list of sushi rolls 
-    $http.get(CONFIG.api_url + 'getstyles').success(function(data) {
+    $http.get(CONFIG.api_url + 'getstyles', { cache: true }).success(function(data) {
         $scope.styles = data;
     });
 
@@ -1121,7 +1121,7 @@ nodeManager.controller('GrupCtrl', function($scope, CONFIG, $http, $state, $stat
     $scope.cariPengguna = ''; // set the default search/filter term
     // create the list of sushi rolls 
 
-    $http.get(CONFIG.api_url + 'kodesimpul').success(function(data) {
+    $http.get(CONFIG.api_url + 'kodesimpul', { cache: true }).success(function(data) {
         $scope.kodesimpul = data;
     });
 
@@ -1376,7 +1376,7 @@ nodeManager.controller('MetalinksCtrl', function($rootScope, $scope, CONFIG, $ht
 
     $scope.selectedsimpul = [];
 
-    $http.get(CONFIG.api_url + 'kodesimpul').success(function(data) {
+    $http.get(CONFIG.api_url + 'kodesimpul', { cache: true }).success(function(data) {
         $scope.kodesimpul = data;
     });
 
@@ -1711,7 +1711,7 @@ nodeManager.controller('MetakugiCtrl', function($rootScope, $scope, CONFIG, $htt
 
     $scope.selectedsimpul = [];
 
-    $http.get(CONFIG.api_url + 'kodesimpul').success(function(data) {
+    $http.get(CONFIG.api_url + 'kodesimpul', { cache: true }).success(function(data) {
         $scope.kodesimpul = data;
     });
 
@@ -2896,14 +2896,19 @@ nodeManager.controller('ctrl_data_to_dev', function($rootScope, $scope, CONFIG, 
 
     $scope.selectedsimpul = [];
 
-    $http.get(CONFIG.api_url + 'kodesimpul').success(function(data) {
+    $http.get(CONFIG.api_url + 'kodesimpul', { cache: true }).success(function(data) {
         $scope.kodesimpul = data;
     });
 
-    $http.get(CONFIG.api_url + 'kodeepsg').success(function(data) {
+    $http.get(CONFIG.api_url + 'kodeepsg', { cache: true }).success(function(data) {
         $scope.kodeepsg = data;
     });
 
+    $scope.stage2 = function() {
+        $scope.nstage1_berkas = true;
+        $scope.nstage2 = true;
+        $scope.nstage1 = false;
+    }
 
     $scope.FileSelect = function($files, schema, fitur, scale) {
         console.log('INIT');
@@ -3286,7 +3291,7 @@ nodeManager.controller('SisFrontCtrl', function($rootScope, $scope, CONFIG, $htt
         console.log(data)
     });
 
-    $http.get(CONFIG.api_url + 'getWMSlayers', { cache: true}).success(function(data) {
+    $http.get(CONFIG.api_url + 'getWMSlayers').success(function(data) {
         // $scope.wmslayer = data;
         for (i = 0, len = data.length, layer_nativename = ''; i < len; i++) {
             $scope.wmslayer.push({ 'id': i, 'layer_nativename': data[i].layer_nativename, 'layer_title': data[i].layer_name, 'aktif': false, 'pilih': false });
