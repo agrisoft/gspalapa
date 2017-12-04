@@ -139,6 +139,13 @@ angular.module('nodeManager').config(['$stateProvider', '$urlRouterProvider', 'U
                     authorizedRoles: [USER_ROLES.admin]
                 }
             })
+            .state('sisFrontCMS', {
+                url: '/sisfrontcms',
+                templateUrl: 'templates/sistem_frontend_cms.html',
+                data: {
+                    authorizedRoles: [USER_ROLES.admin]
+                }
+            })
             .state('sistemState', {
                 url: '/sistem',
                 templateUrl: 'templates/sistem.html',
@@ -149,6 +156,13 @@ angular.module('nodeManager').config(['$stateProvider', '$urlRouterProvider', 'U
             .state('grupFitur', {
                 url: '/grupfitur',
                 templateUrl: 'templates/grupfitur.html',
+                data: {
+                    authorizedRoles: [USER_ROLES.admin]
+                }
+            })
+            .state('docs', {
+                url: '/docs',
+                templateUrl: 'templates/docs.html',
                 data: {
                     authorizedRoles: [USER_ROLES.admin]
                 }

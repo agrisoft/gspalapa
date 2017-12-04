@@ -134,14 +134,14 @@
 
 img {
     min-height: 40px;
-    max-height: 40px;
+    /*max-height: 40px;*/
 }
 
 
 /* Timeline End*/
 
 .frontsearch {
-    margin-top: 60px;
+    margin-top: 25px;
     margin-bottom: 80px;
     /*     left: 0;
     right: 0; */
@@ -179,7 +179,7 @@ img {
     padding-top: 50px;
     height: 100vh;
     width: 200px;
-    font-size: 13px;
+    font-size: 12px;
     position: fixed!important;
     left: -5px;
     overflow: auto;
@@ -276,4 +276,27 @@ img {
     100% {
         transform: rotate(360deg);
     }
+}
+
+#panelup,
+#flipup {
+    padding: 10px;
+    text-align: left;
+    background-color: #e5eecc;
+    border: solid 1px #c3c3c3;
+    margin-left: 15px;
+    margin-right: 15px;
+}
+
+#panelup {
+    padding: 10px;
+    display: none;
+    text-align: left;
+    overflow: visible;
+    height: 250px;
+}
+
+#cmsprevmap {
+    padding-top: 20px;
+    padding-bottom: 20px;
 }

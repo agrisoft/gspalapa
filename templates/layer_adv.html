@@ -9,10 +9,10 @@
                 <h4 class="modal-title">Layer {{ model.layer.layer_id }}?</h4>
             </div>
             <div class="modal-body">
-                <div ng-hide="model.layer.layer_advertised">
+                <div ng-hide="!model.layer.layer_aktif">
                     <p>Yakin akan menonaktifkan service layer <strong>{{ model.layer.layer_id }}</strong>???</p>
                 </div>
-                <div ng-hide="!model.layer.layer_advertised">
+                <div ng-hide="model.layer.layer_aktif">
                     <p>Yakin akan mengaktifkan service layer <strong>{{ model.layer.layer_id }}</strong>???</p>
                 </div>
             </div>

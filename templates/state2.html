@@ -1,4 +1,10 @@
 <div id="StyleView" ng-app="nodeManager" ng-controller="StylesCtrl">
+
+    <ul class="breadcrumb">
+        <li><a href="#">Beranda</a></li>
+        <li class="active">Style</li>
+    </ul>
+
     <div class="panel panel-default">
         <div class="panel-heading clearfix">Styles
             <button type="button" class="btn btn-info pull-right" ng-click="reloadView()" tooltip-placement="top" uib-tooltip="Refresh halaman ini."><span class="glyphicon glyphicon-refresh"></span> Refresh</button>
@@ -17,6 +23,26 @@
                 </div>
             </form>
 
+            <div class="row">
+                <div id="jumlahPerHalaman" class="pull-left" style="padding-left: 15px; vertical-align: middle">
+                    <!--<label for="selpageSize" class="col-md-2 control-label">Jumlah per halaman: </label>-->
+                    <select ng-model="pageSize" id="selpageSize" class="form-control" ng-init="pageSize = '10'">
+                        <option value="10">10</option>
+                        <option value="25">25</option>
+                        <option value="50">50</option>
+                    <option value="100">100</option>
+                </select>
+                </div>
+                <div id="" class="pull-right" style="padding-right: 15px;">
+                    <button class="btn btn-info-xs" ng-disabled="currentPage == 0" ng-click="currentPage=currentPage-1">
+                    Sebelum
+                </button> {{currentPage+1}} dari {{numberOfPages()}} halaman
+                    <button class="btn btn-info-xs" ng-disabled="currentPage+1 >= numberOfPages()" ng-click="currentPage=currentPage+1">
+                    Berikut
+                </button>
+                </div>
+            </div>
+
             <table class="table table-striped table-hover">
 
                 <thead>
@@ -33,7 +59,7 @@
                 </thead>
 
                 <tbody>
-                    <tr ng-repeat="style in styles | orderBy:sortType:sortReverse | filter:cariStyle">
+                    <tr ng-repeat="style in styles | orderBy:sortType:sortReverse | filter:cariStyle | startFrom:currentPage*pageSize | limitTo:pageSize">
                         <td>{{ style.name }}</td>
                         <td style="width: 60px">
                             <div class="btn-group">
@@ -80,24 +106,24 @@
 
 
 <script>
-    function sticky_relocate() {
-        var window_top = $(window).scrollTop();
-        var div_top = $('#sticky_cari_anchor').offset().top;
-        if (window_top > div_top) {
-            $('#sticky_cari').addClass('stick');
-            $('#sticky_cari_anchor').height($('#sticky_cari').outerHeight());
-        } else {
-            $('#sticky_cari').removeClass('stick');
-            $('#sticky_cari_anchor').height(0);
-        }
-    }
+    //function sticky_relocate() {
+    //    var window_top = $(window).scrollTop();
+    //    var div_top = $('#sticky_cari_anchor').offset().top;
+    //    if (window_top > div_top) {
+    //        $('#sticky_cari').addClass('stick');
+    //         $('#sticky_cari_anchor').height($('#sticky_cari').outerHeight());
+    //    } else {
+    //        $('#sticky_cari').removeClass('stick');
+    //        $('#sticky_cari_anchor').height(0);
+    //     }
+    //}
 
     $('#style_tambah').on('hidden.bs.modal', function() {
         angular.element($("#StyleView")).scope().reloadView();
     })
 
-    $(function() {
-        $(window).scroll(sticky_relocate);
-        sticky_relocate();
-    });
+    //  $(function() {
+    //      $(window).scroll(sticky_relocate);
+    //      sticky_relocate();
+    // });
 </script>

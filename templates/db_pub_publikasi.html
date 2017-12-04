@@ -29,6 +29,26 @@
                 </div>
             </form>
 
+            <div class="row">
+                <div id="jumlahPerHalaman" class="pull-left" style="padding-left: 15px; vertical-align: middle">
+                    <!--<label for="selpageSize" class="col-md-2 control-label">Jumlah per halaman: </label>-->
+                    <select ng-model="pageSize" id="selpageSize" class="form-control" ng-init="pageSize = '10'">
+                        <option value="10">10</option>
+                        <option value="25">25</option>
+                        <option value="50">50</option>
+                    <option value="100">100</option>
+                </select>
+                </div>
+                <div id="" class="pull-right" style="padding-right: 15px;">
+                    <button class="btn btn-info-xs" ng-disabled="currentPage == 0" ng-click="currentPage=currentPage-1">
+                    Sebelum
+                </button> {{currentPage+1}} dari {{numberOfPages()}} halaman
+                    <button class="btn btn-info-xs" ng-disabled="currentPage+1 == numberOfPages()" ng-click="currentPage=currentPage+1">
+                    Berikut
+                </button>
+                </div>
+            </div>
+
             <table class="table table-striped table-hover">
 
                 <thead>
@@ -52,12 +72,12 @@
                 </thead>
 
                 <tbody>
-                    <tr ng-repeat="feature in features | orderBy:sortType:sortReverse | filter:cariFitur">
+                    <tr ng-repeat="feature in features | orderBy:sortType:sortReverse | filter:cariFitur | startFrom:currentPage*pageSize | limitTo:pageSize">
                         <td>{{ feature.skema }}</td>
                         <td>{{ feature.fitur }}</td>
                         <td style="width: 60px">
                             <div class="btn-group">
-                                <button type="button" class="btn btn-warning" ng-click="publishKugi.open(feature)" tooltip-placement="left" uib-tooltip="Publikasi dataset ini ke database GeoServer."><span class="glyphicon glyphicon-share"></span></button>
+                                <button ng-hide="cekadmin()" type="button" class="btn btn-warning" ng-click="publishKugi.open(feature)" tooltip-placement="left" uib-tooltip="Publikasi dataset ini ke database GeoServer."><span class="glyphicon glyphicon-share"></span></button>
                             </div>
                         </td>
                     </tr>

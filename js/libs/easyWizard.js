@@ -57,7 +57,7 @@
      btns += '<button type="button" class="btn btn-default wizard-button-exit"' + contentForModal + '>' + exitText + '</button>';
      btns += '<button type="button" class="btn btn-default wizard-button-back">' + backText + '</button>';
      btns += '<button type="button" class="btn btn-default wizard-button-next" id="eWNext" ng-disabled="true">' + nextText + '</button>';
-     btns += '<button type="button" class="btn btn-primary wizard-button-finish" ' + contentForModal + '>' + finishText + '</button>';
+     btns += '<button type="button" class="btn btn-primary wizard-button-finish" id="eWFin" ng-disabled="true" ' + contentForModal + '>' + finishText + '</button>';
      $(this).find(".wizard-buttons").html("");
      $(this).find(".wizard-buttons").append(btns);
      var btnExit = $(this).find(".wizard-button-exit");
@@ -103,7 +103,6 @@
          if (!!config.onfinish) {
              config.onfinish();
          }
-
      })
 
      btnBack.hide();

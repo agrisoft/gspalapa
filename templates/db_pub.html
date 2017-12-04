@@ -24,6 +24,26 @@
                 </div>
             </form>
 
+            <div class="row">
+                <div id="jumlahPerHalaman" class="pull-left" style="padding-left: 15px; vertical-align: middle">
+                    <!--<label for="selpageSize" class="col-md-2 control-label">Jumlah per halaman: </label>-->
+                    <select ng-model="pageSize" id="selpageSize" class="form-control" ng-init="pageSize = '10'">
+                        <option value="10">10</option>
+                        <option value="25">25</option>
+                        <option value="50">50</option>
+                    <option value="100">100</option>
+                </select>
+                </div>
+                <div id="" class="pull-right" style="padding-right: 15px;">
+                    <button class="btn btn-info-xs" ng-disabled="currentPage == 0" ng-click="currentPage=currentPage-1">
+                    Sebelum
+                </button> {{currentPage+1}} dari {{numberOfPages()}} halaman
+                    <button class="btn btn-info-xs" ng-disabled="currentPage+1 >= numberOfPages()" ng-click="currentPage=currentPage+1">
+                    Berikut
+                </button>
+                </div>
+            </div>
+
             <table class="table table-striped table-hover">
 
                 <thead>
@@ -68,7 +88,7 @@
                 </thead>
 
                 <tbody>
-                    <tr ng-repeat="feature in features | orderBy:sortType:sortReverse | filter:cariFitur">
+                    <tr ng-repeat="feature in features | orderBy:sortType:sortReverse | filter:cariFitur | startFrom:currentPage*pageSize | limitTo:pageSize">
                         <td>{{ feature.feature }}</td>
                         <td>{{ feature.alias }}</td>
                         <td>{{ feature.dataset }}</td>
@@ -78,6 +98,7 @@
                             <div class="btn-group">
                                 <!--<button type="button" class="btn btn-warning" ng-click="publishKugi.open(feature)"><span class="glyphicon glyphicon-share"></span></button>-->
                                 <button type="button" ng-disabled="cek_meta(feature.identifier)" class="btn btn-success" ng-click="lihatKugi.open(feature)" tooltip-placement="left" uib-tooltip="Raw XML metadata."><span class="glyphicon glyphicon-info-sign"></span></button>
+                                <button type="button" class="btn btn-success" ng-click="saverow('palapa_prod',feature)" tooltip-placement="left" uib-tooltip="Download Row (GML)."><span class="glyphicon glyphicon-download-alt"></span></button>
                                 <button type="button" class="btn btn-warning" ng-click="tambahKugi.open(feature)" tooltip-placement="right" uib-tooltip="Unggah/update berkas XML metadata."><span class="glyphicon glyphicon-edit"></span></button>
                                 <button type="button" class="btn btn-danger" ng-click="hapusPub.open(feature)" tooltip-placement="right" uib-tooltip="Hapus dataset dari database Publikasi."><span class="glyphicon glyphicon-remove"></span></button>
                             </div>

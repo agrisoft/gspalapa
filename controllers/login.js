@@ -1,8 +1,8 @@
 'use strict';
 
 angular.module('nodeManager')
-    .controller('LoginCtrl', ['$scope', '$state', '$uibModalInstance', '$window', 'Auth',
-        function($scope, $state, $uibModalInstance, $window, Auth) {
+    .controller('LoginCtrl', ['$scope', '$state', '$uibModalInstance', '$window', 'Auth', '$base64',
+        function($scope, $state, $uibModalInstance, $window, Auth, $base64) {
             $scope.credentials = {};
             $scope.loginForm = {};
             $scope.error = false;
@@ -27,7 +27,6 @@ angular.module('nodeManager')
                     $uibModalInstance.close();
                     $state.go('home');
                 }, function(err) {
-                    console.log("error");
                     $scope.error = true;
                 });
             };
@@ -36,6 +35,7 @@ angular.module('nodeManager')
             // log him in again
             if ($window.sessionStorage["userInfo"]) {
                 var credentials = JSON.parse($window.sessionStorage["userInfo"]);
+                credentials.password = $base64.decode(credentials.password)
                 $scope.login(credentials);
             }
 

@@ -23,33 +23,53 @@
                 </div>
             </form>
 
+            <div class="row">
+                <div id="jumlahPerHalaman" class="pull-left" style="padding-left: 15px; vertical-align: middle">
+                    <!--<label for="selpageSize" class="col-md-2 control-label">Jumlah per halaman: </label>-->
+                    <select ng-model="pageSize" id="selpageSize" class="form-control" ng-init="pageSize = '10'">
+                        <option value="10">10</option>
+                        <option value="25">25</option>
+                        <option value="50">50</option>
+                    <option value="100">100</option>
+                </select>
+                </div>
+                <div id="" class="pull-right" style="padding-right: 15px;">
+                    <button class="btn btn-info-xs" ng-disabled="currentPage == 0" ng-click="currentPage=currentPage-1">
+                    Sebelum
+                </button> {{currentPage+1}} dari {{numberOfPages()}} halaman
+                    <button class="btn btn-info-xs" ng-disabled="currentPage+1 == numberOfPages()" ng-click="currentPage=currentPage+1">
+                    Berikut
+                </button>
+                </div>
+            </div>
+
             <table class="table table-striped">
 
-                <thead>
+                <thead class="thead-default">
                     <tr>
-                        <td>
+                        <th>
                             <a href="#/metalinks" ng-click="sortType = 'name'; sortReverse = !sortReverse">
 								Workspace 
 								<span ng-show="sortType == 'name' && !sortReverse" class="fa fa-caret-down"></span>
 								<span ng-show="sortType == 'name' && sortReverse" class="fa fa-caret-up"></span>
 							</a>
-                        </td>
-                        <td>
+                        </th>
+                        <th>
                             <a href="#/metalinks" ng-click="sortType = 'name'; sortReverse = !sortReverse">
 								Identifier 
 								<span ng-show="sortType == 'name' && !sortReverse" class="fa fa-caret-down"></span>
 								<span ng-show="sortType == 'name' && sortReverse" class="fa fa-caret-up"></span>
 							</a>
-                        </td>
-                        <td>Ada Metadata</td>
-                        <td>Tipe Akses</td>
-                        <td>Metadata Terpublikasi</td>
-                        <td>Aksi</td>
+                        </th>
+                        <th>Ada Metadata</th>
+                        <th>Tipe Akses</th>
+                        <th>Metadata Terpublikasi</th>
+                        <th>Aksi</th>
                     </tr>
                 </thead>
 
                 <tbody>
-                    <tr ng-repeat="item in grup | orderBy:sortType:sortReverse | filter:cariMetalinks">
+                    <tr ng-repeat="item in grup | orderBy:sortType:sortReverse | filter:cariMetalinks | startFrom:currentPage*pageSize | limitTo:pageSize">
                         <td>{{ item.workspace }}</td>
                         <td>{{ item.identifier }}</td>
                         <td>
