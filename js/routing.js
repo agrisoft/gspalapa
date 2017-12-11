@@ -167,5 +167,33 @@ angular.module('nodeManager').config(['$stateProvider', '$urlRouterProvider', 'U
                     authorizedRoles: [USER_ROLES.admin]
                 }
             })
+            .state('keyword', {
+                url: '/keyword',
+                templateUrl: 'templates/meta_keywords.html',
+                data: {
+                    authorizedRoles: [USER_ROLES.admin]
+                }
+            })
+            .state('extsrv', {
+                url: '/extsrv',
+                templateUrl: 'templates/ext_services.html',
+                data: {
+                    authorizedRoles: [USER_ROLES.admin]
+                }
+            })
+            .state('basemaps', {
+                url: '/basemaps',
+                templateUrl: 'templates/basemaps.html',
+                data: {
+                    authorizedRoles: [USER_ROLES.admin]
+                }
+            })
+            .state('photos', {
+                url: '/photos',
+                templateUrl: 'templates/photos.html',
+                data: {
+                    authorizedRoles: [USER_ROLES.admin, USER_ROLES.editor]
+                }
+            })
     }
 ])
