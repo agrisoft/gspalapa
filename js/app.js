@@ -3701,6 +3701,21 @@ nodeManager.controller('SistemCtrl', function($rootScope, $scope, CONFIG, $http,
         });
     }
 
+    $scope.upload_logo = [];
+    // $scope.berkas_logo = '';
+    $scope.uploadLogo = function($files) {
+        $scope.logoFile = $files;
+        console.log($scope.logoFile);
+        // $scope.berkas_logo = encodeImageFileAsURL($files);
+        var reader = new FileReader();
+        reader.readAsDataURL($files[0])
+        reader.onloadend = function() {
+            $scope.berkas_logo = reader.result;
+            console.log($scope.berkas_logo);
+        }
+    }
+
+
     $scope.sisteminfoedit = function() {
         var params = $scope.sisteminfo;
         params.organization = encodeURIComponent(params.organization)
@@ -3716,6 +3731,7 @@ nodeManager.controller('SistemCtrl', function($rootScope, $scope, CONFIG, $http,
         params.email = encodeURIComponent(params.email)
         params.individualname = encodeURIComponent(params.individualname)
         params.kodesimpul = encodeURIComponent(params.kodesimpul)
+        params.logo = $scope.berkas_logo;
         console.log(params)
         var data = $.param({
             json: JSON.stringify({
@@ -3723,9 +3739,7 @@ nodeManager.controller('SistemCtrl', function($rootScope, $scope, CONFIG, $http,
             })
         });
         $http.post(CONFIG.api_url + 'sisteminfo/edit', data).success(function(data, status) {
-            $scope.test = data;
-            bootbox.alert($scope.response.MSG)
-            console.log($scope.test);
+            bootbox.alert(data.MSG)
         })
     }
 
@@ -4570,7 +4584,7 @@ nodeManager.directive('keywordEditDialog', [function() {
     };
 }]);
 
-nodeManager.controller('ExtSrvCtrl', function($scope, CONFIG, $http, $state, $stateParams, $upload, $timeout, $uibModal, USER_ROLES) {
+nodeManager.controller('ExtSrvCtrl', function($rootScope, $scope, CONFIG, $http, $state, $stateParams, $upload, $timeout, $uibModal, USER_ROLES) {
     $scope.sortType = 'name'; // set the default sort type
     $scope.sortReverse = false; // set the default sort order
     $scope.cariPengguna = ''; // set the default search/filter term
@@ -5001,7 +5015,7 @@ nodeManager.directive('basemapsEditDialog', [function() {
     };
 }]);
 
-nodeManager.controller('PhotosCtrl', function($scope, CONFIG, $http, $state, $stateParams, $upload, $timeout, $uibModal, USER_ROLES) {
+nodeManager.controller('PhotosCtrl', function($rootScope, $scope, CONFIG, $http, $state, $stateParams, $upload, $timeout, $uibModal, USER_ROLES) {
     $scope.sortType = 'name'; // set the default sort type
     $scope.sortReverse = false; // set the default sort order
     $scope.cariPengguna = ''; // set the default search/filter term
@@ -5018,4 +5032,60 @@ nodeManager.controller('PhotosCtrl', function($scope, CONFIG, $http, $state, $st
             notify: true
         });
     }
+
+    $scope.upload_logo = [];
+    // $scope.berkas_logo = '';
+    $scope.uploadLogo = function($files) {
+        $scope.logoFile = $files;
+        console.log($scope.logoFile);
+        // $scope.berkas_logo = encodeImageFileAsURL($files);
+        var reader = new FileReader();
+        reader.readAsDataURL($files[0])
+        reader.onloadend = function() {
+            $scope.berkas_logo = reader.result;
+            console.log($scope.berkas_logo);
+        }
+    }
+
+    $scope.photosentry = {}
+
+    $scope.tambahGSPhotos = function() {
+        var params = $scope.photosentry;
+        // console.log(params)
+        params.lon = $("#lon").text();
+        params.lat = $("#lat").text();
+        params.nama = encodeURIComponent($("#photosentrynama").val())
+        params.remark = encodeURIComponent($("#photosentryremark").val())
+        params.photo = $scope.berkas_logo
+        params.uploader = $rootScope.currentUser['user']
+        params.ugroup = $rootScope.currentUser['grup']
+        console.log(params)
+        var data = $.param({
+            json: JSON.stringify({
+                pubdata: params
+            })
+        });
+        $http.post(CONFIG.api_url + 'photos/add', data).success(function(data, status) {
+            pesan = data;
+            bootbox.alert(pesan.MSG);
+            refreshOL();
+        })
+    }
+
+    $scope.hapusGSPhotos = function() {
+        params = {}
+        params.id = $("#idphoto").text()
+        console.log(params)
+        var data = $.param({
+            json: JSON.stringify({
+                pubdata: params
+            })
+        });
+        $http.post(CONFIG.api_url + 'photos/delete', data).success(function(data, status) {
+            pesan = data;
+            bootbox.alert(pesan.MSG);
+            refreshOL();
+        })
+    }
+
 });

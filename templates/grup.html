@@ -54,6 +54,7 @@
             <span ng-show="sortType == 'organization' && sortReverse" class="fa fa-caret-up"></span>
           </a>
                         </td>
+                        <td>Logo</td>
                         <!--<td>Aktif</td>-->
                     </tr>
                 </thead>
@@ -62,6 +63,7 @@
                     <tr ng-repeat="item in grup | orderBy:sortType:sortReverse | filter:cariPengguna | startFrom:currentPage*pageSize | limitTo:pageSize">
                         <td>{{ item.name }}</td>
                         <td>{{ item.organization }}</td>
+                        <td><img style='height: 50px;' src='data:image/jpeg;base64,{{ item.logo }}' /></td>
                         <!--<td>
                             <span ng-if="item.enabled=='Y'" class="fa fa-check-square-o"></span>
                             <span ng-if="item.enabled!='Y'" class="fa fa-square-o"></span>

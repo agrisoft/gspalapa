@@ -25,6 +25,23 @@ $.get(baseAPIURL + 'photos/list', function(data) {
         photosSource.addFeature(feature);
     }
 });
+
+function refreshOL() {
+    photosSource.clear()
+    $.get(baseAPIURL + 'photos/list', function(data) {
+        console.log(data);
+        for (i = 0; i < data.length; i++) {
+            var feature = new ol.Feature(data[i]);
+            feature.set('nama', data[i].nama);
+            var coordinate = [parseFloat(data[i].lon), parseFloat(data[i].lat)];
+            var geometry = new ol.geom.Point(coordinate);
+            feature.setGeometry(geometry);
+            photosSource.addFeature(feature);
+            closer.onclick();
+        }
+    });
+}
+
 var photosSource = new ol.source.Vector();
 var photosstyle = new ol.style.Style({
     image: new ol.style.Circle({
@@ -78,10 +95,36 @@ typeSelect.onchange = function() {
     map.removeInteraction(draw);
     addInteraction();
 };
-addInteraction();
+
+// $(document).ready(function() {
+//     console.log("ready!");
+
+// });
+
 map.on("singleclick", function(evt) {
+    content.innerHTML = '';
+    var features = '';
     var coordinate = evt.coordinate;
+    var lonloatcoor = ol.coordinate.toStringXY(coordinate, 8)
     var hdms = ol.coordinate.toStringHDMS(coordinate);
-    content.innerHTML = "<p>You clicked here:</p><code>" + hdms + "</code>";
+    features = map.getFeaturesAtPixel(evt.pixel);
+    console.log(features, lonloatcoor)
+    if (features) {
+        id = features[0].get('id');
+        nama = features[0].get('nama');
+        remark = features[0].get('remark');
+        photo = features[0].get('photo');
+        content.innerHTML = "<p><strong>" + nama + "</strong></p><p><strong>" + remark + "</strong></p><p><img style='height: 250px;' src='data:image/jpeg;base64," + photo + "'/></div></p><code>" + hdms + "</code><div id='idphoto' style='display:none;'>" + id + "</div><div style='padding-top:10px;'><button id='btn_hapus' type='button' class='btn btn-primary' data-toggle='modal' data-target='#photos_hapus'>Hapus</button></div>";
+        $("#btn_hapus").on('click', function() {
+            $("#photos_hapus").modal('toggle');
+        })
+    } else {
+        content.innerHTML = '<p>Anda menklik disini:</p><code>' + hdms + "</code><div id='tambahfoto'  style='padding-top:10px;'><a id='btn_tambah' class='btn btn-primary'>Beri Foto</a></div><div id='lon' style='display:none'>" + coordinate[0] + "</div><div id='lat' style='display:none'>" + coordinate[1] + "</div>";
+        addInteraction();
+        map.removeInteraction(draw);
+        $("#btn_tambah").on('click', function() {
+            $("#photos_tambah").modal('toggle');
+        })
+    }
     overlay.setPosition(coordinate);
 });
