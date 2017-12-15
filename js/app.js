@@ -203,6 +203,20 @@ nodeManager.controller('SideMenuController', function($scope, CONFIG, $http) {
                     tooltip: "Manajemen Style GeoServer",
                     level: "member"
                 },
+                {
+                    title: "Link Web",
+                    action: "#/linkweb",
+                    icons: "fa fa-paint-brush",
+                    tooltip: "Manajemen Link Web",
+                    level: "admin"
+                },
+                {
+                    title: "Kontak Masuk",
+                    action: "#/kontak",
+                    icons: "fa fa-paint-brush",
+                    tooltip: "Kontak Masuk",
+                    level: "admin"
+                },
             ]
         }
     ]
@@ -3754,64 +3768,6 @@ nodeManager.controller('SisFrontCMSCtrl', function($rootScope, $scope, CONFIG, $
     $scope.sortReverse = false; // set the default sort order
     $scope.cariLayer = ''; // set the default search/filter term
     $scope.sisteminfo = '';
-    $scope.frontend_content = [];
-    $scope.upload_logo = [];
-    $scope.upload_gambar1 = [];
-    $scope.upload_gambar2 = [];
-    $scope.berkas_logo = '';
-    $scope.berkas_gambar1 = '';
-    $scope.berkas_gambar2 = '';
-    $scope.clatitude = parseFloat($rootScope.clat);
-    $scope.clongitue = parseFloat($rootScope.clon);
-    $scope.czoom = 5;
-
-    angular.extend($scope, {
-        center: {
-            lat: $scope.clatitude,
-            lon: $scope.clongitue,
-            zoom: $scope.czoom,
-            projection: 'EPSG:4326',
-            bounds: []
-        },
-        defaults: {
-            layers: [{
-                main: {
-                    source: {
-                        type: 'OSM',
-                        url: baseXYZLayer
-                    }
-                }
-            }],
-            interactions: {
-                mouseWheelZoom: true
-            },
-            controls: {
-                zoom: true,
-                rotate: true,
-                attribution: false
-            }
-        }
-    });
-
-    angular.extend($scope, {
-        wms: {
-            source: {
-                type: 'ImageWMS',
-                url: CONFIG.gs_url,
-                params: {}
-            }
-        }
-    });
-
-    $scope.updatemap = function(layer) {
-        setTimeout(function() {
-                $scope.$apply(function() {
-                    $scope.wms.source.params.LAYERS = layer
-                });
-            })
-            // $scope.wms.source.params.LAYERS = layer
-            // olData.
-    };
 
     $scope.reloadView = function() {
         $state.transitionTo($state.current, $stateParams, {
@@ -3821,155 +3777,88 @@ nodeManager.controller('SisFrontCMSCtrl', function($rootScope, $scope, CONFIG, $
         });
     }
 
-    $http.get(CONFIG.api_url + 'frontendtheme').success(function(data) {
+    $http.get(CONFIG.api_url + 'frontend').success(function(data) {
         $scope.frontend_content = data;
         console.log($scope.frontend_content)
     });
 
-    $scope.uploadLogo = function(file) {
-        $scope.logoFile = file;
-        console.log($scope.logoFile);
-    }
-
-    $scope.uploadGambar1 = function(file) {
-        $scope.gambar1File = file;
-        console.log($scope.gambar1File);
-    }
-
-    $scope.uploadGambar2 = function(file) {
-        $scope.gambar2File = file;
-        console.log($scope.gambar2File);
-    }
-
-    $scope.uploadBerkasLogo = function($files) {
-        console.log('INIT');
-        console.log($files);
-        //$files: an array of files selected, each file has name, size, and type.
-        for (var i = 0; i < $files.length; i++) {
-            var $file = $files[i];
-            (function(index) {
-                $scope.upload_logo[index] = $upload.upload({
-                    url: CONFIG.api_url + 'setfrontend/uploadlogo', // webapi url
-                    method: "POST",
-                    // data: { fileUploadObj: $scope.fileUploadObj },
-                    file: $file
-                }).progress(function(evt) {
-                    // get upload percentage
-                    console.log('percent: ' + parseInt(100.0 * evt.loaded / evt.total));
-                    $scope.progress_docs = parseInt(100.0 * evt.loaded / evt.total);
-                }).success(function(data, status, headers, config) {
-                    // file is uploaded successfully
-                    $scope.berkas_logo = data.VAL;
-                    console.log($scope.berkas_logo);
-                }).error(function(data, status, headers, config) {
-                    // file failed to upload
-                    $scope.bresponse = data;
-                    console.log(data);
-                });
-            })(i);
+    $scope.uploadGambar1 = function($files) {
+        $scope.gambar1File = $files;
+        // console.log($scope.gambar1File);
+        var reader = new FileReader();
+        reader.readAsDataURL($files[0])
+        reader.onloadend = function() {
+            $scope.berkas_gambar1 = reader.result;
+            // console.log($scope.berkas_gambar1);
         }
     }
 
-    $scope.uploadBerkasGambar1 = function($files) {
-        console.log('INIT');
-        console.log($files);
-        //$files: an array of files selected, each file has name, size, and type.
-        for (var i = 0; i < $files.length; i++) {
-            var $file = $files[i];
-            (function(index) {
-                $scope.upload_gambar1[index] = $upload.upload({
-                    url: CONFIG.api_url + 'setfrontend/uploadgambar1', // webapi url
-                    method: "POST",
-                    // data: { fileUploadObj: $scope.fileUploadObj },
-                    file: $file
-                }).progress(function(evt) {
-                    // get upload percentage
-                    console.log('percent: ' + parseInt(100.0 * evt.loaded / evt.total));
-                    $scope.progress_docs = parseInt(100.0 * evt.loaded / evt.total);
-                }).success(function(data, status, headers, config) {
-                    // file is uploaded successfully
-                    $scope.berkas_gambar1 = data.VAL;
-                    console.log($scope.berkas_gambar1);
-                }).error(function(data, status, headers, config) {
-                    // file failed to upload
-                    $scope.bresponse = data;
-                    console.log(data);
-                });
-            })(i);
+    $scope.uploadGambar2 = function($files) {
+        $scope.gambar2File = $files;
+        // console.log($scope.gambar2File);
+        var reader = new FileReader();
+        reader.readAsDataURL($files[0])
+        reader.onloadend = function() {
+            $scope.berkas_gambar2 = reader.result;
+            // console.log($scope.berkas_gambar2);
         }
     }
 
-    $scope.uploadBerkasGambar2 = function($files) {
-        console.log('INIT');
-        console.log($files);
-        //$files: an array of files selected, each file has name, size, and type.
-        for (var i = 0; i < $files.length; i++) {
-            var $file = $files[i];
-            (function(index) {
-                $scope.upload_gambar2[index] = $upload.upload({
-                    url: CONFIG.api_url + 'setfrontend/uploadgambar2', // webapi url
-                    method: "POST",
-                    // data: { fileUploadObj: $scope.fileUploadObj },
-                    file: $file
-                }).progress(function(evt) {
-                    // get upload percentage
-                    console.log('percent: ' + parseInt(100.0 * evt.loaded / evt.total));
-                    $scope.progress_docs = parseInt(100.0 * evt.loaded / evt.total);
-                }).success(function(data, status, headers, config) {
-                    // file is uploaded successfully
-                    $scope.response = data;
-                    $scope.berkas_gambar2 = $scope.response.VAL;
-                    console.log($scope.berkas_gambar2);
-                }).error(function(data, status, headers, config) {
-                    // file failed to upload
-                    $scope.bresponse = data;
-                    console.log(data);
-                });
-            })(i);
+    $scope.uploadGambar3 = function($files) {
+        $scope.gambar3File = $files;
+        // console.log($scope.gambar3File);
+        var reader = new FileReader();
+        reader.readAsDataURL($files[0])
+        reader.onloadend = function() {
+            $scope.berkas_gambar3 = reader.result;
+            // console.log($scope.berkas_gambar3);
+        }
+    }
+
+    $scope.uploadGambar4 = function($files) {
+        $scope.gambar4File = $files;
+        // console.log($scope.gambar4File);
+        var reader = new FileReader();
+        reader.readAsDataURL($files[0])
+        reader.onloadend = function() {
+            $scope.berkas_gambar4 = reader.result;
+            // console.log($scope.berkas_gambar4);
+        }
+    }
+
+
+    $scope.uploadLogo = function($files) {
+        $scope.logoFile = $files;
+        // console.log($scope.logoFile);
+        // $scope.berkas_logo = encodeImageFileAsURL($files);
+        var reader = new FileReader();
+        reader.readAsDataURL($files[0])
+        reader.onloadend = function() {
+            $scope.berkas_logo = reader.result;
+            // console.log($scope.berkas_logo);
         }
     }
 
     $scope.SimpanTheme = function() {
-        var params = $scope.frontend_content;
-        if (document.getElementById("CMSlogoHalaman").files.length == 0) {
-            console.log("no files selected");
-        } else {
-            $scope.uploadBerkasLogo($scope.logoFile);
-            params.logo_situs = encodeURIComponent($scope.logoFile[0].name);
-        };
-        if (document.getElementById("CMSgambarHalaman1").files.length == 0) {
-            console.log("no files selected");
-        } else {
-            $scope.uploadBerkasGambar1($scope.gambar1File);
-            params.berkas_gambar_1 = encodeURIComponent($scope.gambar1File[0].name);
-        };
-        if (document.getElementById("CMSgambarHalaman2").files.length == 0) {
-            console.log("no files selected");
-        } else {
-            $scope.uploadBerkasGambar2($scope.gambar2File);
-            params.berkas_gambar_2 = encodeURIComponent($scope.gambar2File[0].name);
-        };
-        params.judul_situs = encodeURIComponent(params.judul_situs);
-        params.keterangan_gambar_1 = encodeURIComponent(params.keterangan_gambar_1);
-        params.keterangan_gambar_2 = encodeURIComponent(params.keterangan_gambar_2);
-        params.judul_headline = encodeURIComponent(params.judul_headline);
-        params.keterangan_headline = encodeURIComponent(params.keterangan_headline);
-        params.judul_fitur = encodeURIComponent(params.judul_fitur);
-        params.keterangan_fitur = encodeURIComponent(params.keterangan_fitur);
-        params.tipe_tema = encodeURIComponent(params.tipe_tema);
-        params.c_y = $scope.center.lat;
-        params.c_x = $scope.center.lon;
-        params.c_zoom = $scope.center.zoom;
+        var params = {};
+        params.id = $scope.frontend_content[0].id;
+        params.remark_1 = encodeURIComponent($scope.frontend_content[0].remark_1);
+        params.image_1 = $scope.berkas_gambar1;
+        params.image_2 = $scope.berkas_gambar2;
+        params.image_3 = $scope.berkas_gambar3;
+        params.image_4 = $scope.berkas_gambar4;
         console.log(params)
-        console.log($scope.frontend_content)
+            // console.log($scope.frontend_content)
         var data = $.param({
             json: JSON.stringify({
                 pubdata: params
             })
         });
-        console.log(data)
-        $http.post(CONFIG.api_url + 'setfrontendtheme', data).success(function(data, status) {
+        // console.log(data)
+        $http.post(CONFIG.api_url + 'setfrontend', data).success(function(data, status) {
+            $scope.reloadView();
             pesan = data;
+            params.remark_1 = decodeURIComponent(params.remark1);
             bootbox.alert(pesan.MSG)
             console.log(pesan);
         });
@@ -5089,3 +4978,296 @@ nodeManager.controller('PhotosCtrl', function($rootScope, $scope, CONFIG, $http,
     }
 
 });
+
+nodeManager.controller('LinkwebCtrl', function($scope, CONFIG, $http, $state, $stateParams, $upload, $timeout, $uibModal, USER_ROLES) {
+    $scope.sortType = 'name'; // set the default sort type
+    $scope.sortReverse = false; // set the default sort order
+    $scope.cariPengguna = ''; // set the default search/filter term
+    // create the list of sushi rolls 
+
+    $scope.reloadView = function() {
+        $state.transitionTo($state.current, $stateParams, {
+            reload: true,
+            inherit: false,
+            notify: true
+        });
+    }
+
+    $scope.currentPage = 0;
+    $scope.pageSize = 10;
+    $scope.linkweb = [];
+
+    $http.get(CONFIG.api_url + 'linkweb/list').success(function(data) {
+        $scope.linkweb = data;
+        $scope.numberOfPages = function() {
+            return Math.ceil($scope.linkweb.length / $scope.pageSize);
+        }
+    });
+
+    $scope.upload_logo = [];
+    // $scope.berkas_logo = '';
+
+    $scope.uploadLogo = function($files) {
+        $scope.logoFile = $files;
+        console.log($scope.logoFile);
+        // $scope.berkas_logo = encodeImageFileAsURL($files);
+        var reader = new FileReader();
+        reader.readAsDataURL($files[0])
+        reader.onloadend = function() {
+            $scope.berkas_logo = reader.result;
+            console.log($scope.berkas_logo);
+        }
+    }
+
+    $scope.uploadBerkasLogo = function($files) {
+        // console.log('INIT');
+        // console.log($files);
+        //$files: an array of files selected, each file has name, size, and type.
+        // for (var i = 0; i < $files.length; i++) {
+        //     var $file = $files[i];
+        //     (function(index) {
+        //         $scope.berkas_logo = encodeImageFileAsURL($file);
+        //     })(i);
+        // }
+        // console.log($scope.berkas_logo);
+    }
+
+    var HapusLinkwebDialogModel = function() {
+        this.visible = false;
+    };
+
+    HapusLinkwebDialogModel.prototype.open = function(item) {
+        this.item = item;
+        console.log(item);
+        this.visible = true;
+    };
+
+    HapusLinkwebDialogModel.prototype.close = function() {
+        this.visible = false;
+    };
+
+    var EditLinkwebDialogModel = function() {
+        this.visible = false;
+    };
+
+    EditLinkwebDialogModel.prototype.open = function(item) {
+        this.item = item;
+        console.log(item);
+        this.visible = true;
+    };
+
+    EditLinkwebDialogModel.prototype.close = function() {
+        this.visible = false;
+    };
+
+    var InfoLinkwebDialogModel = function() {
+        this.visible = false;
+    };
+
+
+    $scope.hapusLinkweb = new HapusLinkwebDialogModel();
+    $scope.editLinkweb = new EditLinkwebDialogModel();
+    $scope.linkwebentry = {}
+    $scope.linkwebentry.nama = ''
+
+    $scope.tambahGSLinkweb = function() {
+        var params = $scope.linkwebentry;
+        params.nama = encodeURIComponent(params.nama)
+        params.url = encodeURIComponent(params.url)
+        params.image = $scope.berkas_logo;
+        console.log(params)
+        var data = $.param({
+            json: JSON.stringify({
+                pubdata: params
+            })
+        });
+        $http.post(CONFIG.api_url + 'linkweb/add', data).success(function(data, status) {
+            pesan = data;
+            params.nama = decodeURIComponent(params.nama)
+            params.url = decodeURIComponent(params.url)
+            bootbox.alert(pesan.MSG)
+                // $state.transitionTo($state.current, $stateParams, {
+                //     reload: true,
+                //     inherit: false,
+                //     notify: true
+                // });
+        })
+    }
+
+    $scope.editGSLinkweb = function(item) {
+        var params = item;
+        params.nama = encodeURIComponent(params.nama)
+        params.url = encodeURIComponent(params.url)
+        params.image = $scope.berkas_logo;
+        console.log(params)
+        var data = $.param({
+            json: JSON.stringify({
+                pubdata: params
+            })
+        });
+        $http.post(CONFIG.api_url + 'linkweb/edit', data).success(function(data, status) {
+            pesan = data;
+            bootbox.alert(pesan.MSG)
+            params.nama = decodeURIComponent(params.nama)
+            params.url = decodeURIComponent(params.url)
+                // $state.transitionTo($state.current, $stateParams, {
+                //     reload: true,
+                //     inherit: false,
+                //     notify: true
+                // });
+        })
+    }
+
+    $scope.hapusGSLinkweb = function() {
+        var params = $scope.model.item;
+        console.log(params)
+        var data = $.param({
+            json: JSON.stringify({
+                pubdata: params
+            })
+        });
+        $http.post(CONFIG.api_url + 'linkweb/delete', data).success(function(data, status) {
+            pesan = data;
+            bootbox.alert(pesan.MSG)
+        })
+    }
+
+});
+
+nodeManager.directive('linkwebHapusDialog', [function() {
+    return {
+        restrict: 'E',
+        scope: {
+            model: '=',
+        },
+        link: function(scope, element, attributes) {
+            scope.$watch('model.visible', function(newValue) {
+                var modalElement = element.find('.modal');
+                modalElement.modal(newValue ? 'show' : 'hide');
+            });
+            element.on('shown.bs.modal', function() {
+                scope.$apply(function() {
+                    scope.model.visible = true;
+                });
+            });
+            element.on('hidden.bs.modal', function() {
+                scope.$apply(function() {
+                    scope.model.visible = false;
+                });
+            });
+        },
+        templateUrl: 'templates/linkweb_hapus.html'
+    };
+}]);
+
+nodeManager.directive('linkwebEditDialog', [function() {
+    return {
+        restrict: 'E',
+        scope: {
+            model: '=',
+        },
+        link: function(scope, element, attributes) {
+            scope.$watch('model.visible', function(newValue) {
+                var modalElement = element.find('.modal');
+                modalElement.modal(newValue ? 'show' : 'hide');
+            });
+            element.on('shown.bs.modal', function() {
+                scope.$apply(function() {
+                    scope.model.visible = true;
+                });
+            });
+            element.on('hidden.bs.modal', function() {
+                scope.$apply(function() {
+                    scope.model.visible = false;
+                });
+            });
+        },
+        templateUrl: 'templates/linkweb_edit.html'
+    };
+}]);
+
+nodeManager.controller('KontakCtrl', function($scope, CONFIG, $http, $state, $stateParams, $upload, $timeout, $uibModal, USER_ROLES) {
+    $scope.sortType = 'name'; // set the default sort type
+    $scope.sortReverse = false; // set the default sort order
+    $scope.cariPengguna = ''; // set the default search/filter term
+    // create the list of sushi rolls 
+
+    $scope.reloadView = function() {
+        $state.transitionTo($state.current, $stateParams, {
+            reload: true,
+            inherit: false,
+            notify: true
+        });
+    }
+
+    $scope.currentPage = 0;
+    $scope.pageSize = 10;
+    $scope.kontak = [];
+
+    $http.get(CONFIG.api_url + 'kontak/list').success(function(data) {
+        $scope.kontak = data;
+        $scope.numberOfPages = function() {
+            return Math.ceil($scope.kontak.length / $scope.pageSize);
+        }
+    });
+
+
+    var HapusKontakDialogModel = function() {
+        this.visible = false;
+    };
+
+    HapusKontakDialogModel.prototype.open = function(item) {
+        this.item = item;
+        console.log(item);
+        this.visible = true;
+    };
+
+    HapusKontakDialogModel.prototype.close = function() {
+        this.visible = false;
+    };
+
+    $scope.hapusKontak = new HapusKontakDialogModel();
+    $scope.kontakentry = {}
+    $scope.kontakentry.kontak = ''
+
+    $scope.hapusGSKontak = function() {
+        var params = $scope.model.item;
+        console.log(params)
+        var data = $.param({
+            json: JSON.stringify({
+                pubdata: params
+            })
+        });
+        $http.post(CONFIG.api_url + 'kontak/delete', data).success(function(data, status) {
+            pesan = data;
+            bootbox.alert(pesan.MSG)
+        })
+    }
+
+});
+
+nodeManager.directive('kontakHapusDialog', [function() {
+    return {
+        restrict: 'E',
+        scope: {
+            model: '=',
+        },
+        link: function(scope, element, attributes) {
+            scope.$watch('model.visible', function(newValue) {
+                var modalElement = element.find('.modal');
+                modalElement.modal(newValue ? 'show' : 'hide');
+            });
+            element.on('shown.bs.modal', function() {
+                scope.$apply(function() {
+                    scope.model.visible = true;
+                });
+            });
+            element.on('hidden.bs.modal', function() {
+                scope.$apply(function() {
+                    scope.model.visible = false;
+                });
+            });
+        },
+        templateUrl: 'templates/kontak_hapus.html'
+    };
+}]);

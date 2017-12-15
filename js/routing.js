@@ -141,7 +141,7 @@ angular.module('nodeManager').config(['$stateProvider', '$urlRouterProvider', 'U
             })
             .state('sisFrontCMS', {
                 url: '/sisfrontcms',
-                templateUrl: 'templates/sistem_frontend_cms.html',
+                templateUrl: 'templates/frontend_cms.html',
                 data: {
                     authorizedRoles: [USER_ROLES.admin]
                 }
@@ -192,7 +192,21 @@ angular.module('nodeManager').config(['$stateProvider', '$urlRouterProvider', 'U
                 url: '/photos',
                 templateUrl: 'templates/photos.html',
                 data: {
-                    authorizedRoles: [USER_ROLES.admin, USER_ROLES.editor]
+                    authorizedRoles: [USER_ROLES.admin]
+                }
+            })
+            .state('linkweb', {
+                url: '/linkweb',
+                templateUrl: 'templates/linkweb.html',
+                data: {
+                    authorizedRoles: [USER_ROLES.admin]
+                }
+            })
+            .state('kontak', {
+                url: '/kontak',
+                templateUrl: 'templates/kontak.html',
+                data: {
+                    authorizedRoles: [USER_ROLES.admin]
                 }
             })
     }
