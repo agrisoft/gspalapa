@@ -55,6 +55,10 @@
                     <td>Logo</td>
                     <td style="width: 120px;"><img style='height: 120px;' src='{{ sisteminfo.logo  }}' /></td>
                 </tr>
+                <tr>
+                    <td>Tentang Kami</td>
+                    <td>{{ sisteminfo.tentangkami }}</td>
+                </tr>
             </table>
 
         </div>
@@ -113,6 +117,10 @@
                     <tr>
                         <td>e-mail</td>
                         <td><input class="form-control input-sm" type="text" style="width: 500" ng-model="sisteminfo.email"></td>
+                    </tr>
+                    <tr>
+                        <td>Tentang Kami</td>
+                        <td><input class="form-control input-sm" type="text" style="width: 500" ng-model="sisteminfo.tentangkami"></td>
                     </tr>
                     <tr class="warning">
                         <td style="width: 150px">Logo</td>

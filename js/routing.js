@@ -209,5 +209,12 @@ angular.module('nodeManager').config(['$stateProvider', '$urlRouterProvider', 'U
                     authorizedRoles: [USER_ROLES.admin]
                 }
             })
+            .state('berita', {
+                url: '/berita',
+                templateUrl: 'templates/berita.html',
+                data: {
+                    authorizedRoles: [USER_ROLES.admin]
+                }
+            })
     }
 ])

@@ -120,6 +120,13 @@ nodeManager.controller('SideMenuController', function($scope, CONFIG, $http) {
                     icons: "fa fa-file-text",
                     tooltip: "Dokumen usulan skema Non-KUGI",
                     level: "member"
+                },
+                {
+                    title: "Berita",
+                    action: "#/berita",
+                    icons: "fa fa-file-text",
+                    tooltip: "Berita",
+                    level: "admin"
                 }
             ]
         },
@@ -3745,8 +3752,9 @@ nodeManager.controller('SistemCtrl', function($rootScope, $scope, CONFIG, $http,
         params.email = encodeURIComponent(params.email)
         params.individualname = encodeURIComponent(params.individualname)
         params.kodesimpul = encodeURIComponent(params.kodesimpul)
+        params.tentangkami = encodeURIComponent(params.tentangkami)
         params.logo = $scope.berkas_logo;
-        console.log(params)
+        console.log(params.tentangkami)
         var data = $.param({
             json: JSON.stringify({
                 pubdata: params
@@ -5269,5 +5277,225 @@ nodeManager.directive('kontakHapusDialog', [function() {
             });
         },
         templateUrl: 'templates/kontak_hapus.html'
+    };
+}]);
+
+var editisi;
+
+nodeManager.controller('BeritaCtrl', function($scope, CONFIG, $http, $state, $stateParams, $upload, $timeout, $uibModal, USER_ROLES) {
+    $scope.sortType = 'name'; // set the default sort type
+    $scope.sortReverse = false; // set the default sort order
+    $scope.cariPengguna = ''; // set the default search/filter term
+    // create the list of sushi rolls 
+
+    $scope.reloadView = function() {
+        $state.transitionTo($state.current, $stateParams, {
+            reload: true,
+            inherit: false,
+            notify: true
+        });
+    }
+
+    $scope.currentPage = 0;
+    $scope.pageSize = 10;
+    $scope.berita = [];
+
+    $http.get(CONFIG.api_url + 'berita/list').success(function(data) {
+        $scope.berita = data;
+        $scope.numberOfPages = function() {
+            return Math.ceil($scope.berita.length / $scope.pageSize);
+        }
+    });
+
+    $scope.upload_logo = [];
+    // $scope.berkas_logo = '';
+
+    $scope.uploadLogo = function($files) {
+        $scope.logoFile = $files;
+        console.log($scope.logoFile);
+        // $scope.berkas_logo = encodeImageFileAsURL($files);
+        var reader = new FileReader();
+        reader.readAsDataURL($files[0])
+        reader.onloadend = function() {
+            $scope.berkas_logo = reader.result;
+            console.log($scope.berkas_logo);
+        }
+    }
+
+    $scope.uploadBerkasLogo = function($files) {
+        // console.log('INIT');
+        // console.log($files);
+        //$files: an array of files selected, each file has name, size, and type.
+        // for (var i = 0; i < $files.length; i++) {
+        //     var $file = $files[i];
+        //     (function(index) {
+        //         $scope.berkas_logo = encodeImageFileAsURL($file);
+        //     })(i);
+        // }
+        // console.log($scope.berkas_logo);
+    }
+
+    var HapusBeritaDialogModel = function() {
+        this.visible = false;
+    };
+
+    HapusBeritaDialogModel.prototype.open = function(item) {
+        this.item = item;
+        console.log(item);
+        this.visible = true;
+    };
+
+    HapusBeritaDialogModel.prototype.close = function() {
+        this.visible = false;
+    };
+
+    var EditBeritaDialogModel = function() {
+        this.visible = false;
+    };
+
+    EditBeritaDialogModel.prototype.open = function(item) {
+        this.item = item;
+        this.item.tgl = new Date(item.tanggal)
+        console.log(item);
+        window.editisi = this.item.isiberita;
+        this.visible = true;
+    };
+
+    EditBeritaDialogModel.prototype.close = function() {
+        this.visible = false;
+    };
+
+    var InfoBeritaDialogModel = function() {
+        this.visible = false;
+    };
+
+
+    $scope.hapusBerita = new HapusBeritaDialogModel();
+    $scope.editBerita = new EditBeritaDialogModel();
+    $scope.beritaentry = {}
+        // $scope.beritaentry.nama = ''
+
+    $scope.tambahGSBerita = function() {
+        var params = $scope.beritaentry;
+        params.judul = encodeURIComponent(params.judul)
+        markupStr = $('#isiberita').summernote('code');
+        params.isiberita = encodeURIComponent(markupStr)
+        console.log(params)
+        var data = $.param({
+            json: JSON.stringify({
+                pubdata: params
+            })
+        });
+        $http.post(CONFIG.api_url + 'berita/add', data).success(function(data, status) {
+            pesan = data;
+            $scope.beritaentry.judul = decodeURIComponent(params.judul)
+            markupStr = $('#isiberita').summernote('code');
+            $scope.beritaentry.isiberita = decodeURIComponent(markupStr)
+            bootbox.alert(pesan.MSG)
+                // $state.transitionTo($state.current, $stateParams, {
+                //     reload: true,
+                //     inherit: false,
+                //     notify: true
+                // });
+        })
+    }
+
+    $scope.editGSBerita = function(item) {
+        var params = item;
+        params.judul = encodeURIComponent(params.judul)
+        markupStr = $('#editisiberita').summernote('code');
+        params.isiberita = encodeURIComponent(markupStr)
+        console.log(params)
+        var data = $.param({
+            json: JSON.stringify({
+                pubdata: params
+            })
+        });
+        $http.post(CONFIG.api_url + 'berita/edit', data).success(function(data, status) {
+            pesan = data;
+            bootbox.alert(pesan.MSG)
+            params.nama = decodeURIComponent(params.nama)
+            params.url = decodeURIComponent(params.url)
+                // $state.transitionTo($state.current, $stateParams, {
+                //     reload: true,
+                //     inherit: false,
+                //     notify: true
+                // });
+        })
+    }
+
+    $scope.hapusGSBerita = function() {
+        var params = $scope.model.item;
+        console.log(params)
+        var data = $.param({
+            json: JSON.stringify({
+                pubdata: params
+            })
+        });
+        $http.post(CONFIG.api_url + 'berita/delete', data).success(function(data, status) {
+            pesan = data;
+            bootbox.alert(pesan.MSG)
+        })
+    }
+
+});
+
+nodeManager.directive('beritaHapusDialog', [function() {
+    return {
+        restrict: 'E',
+        scope: {
+            model: '=',
+        },
+        link: function(scope, element, attributes) {
+            scope.$watch('model.visible', function(newValue) {
+                var modalElement = element.find('.modal');
+                modalElement.modal(newValue ? 'show' : 'hide');
+            });
+            element.on('shown.bs.modal', function() {
+                scope.$apply(function() {
+                    scope.model.visible = true;
+                });
+            });
+            element.on('hidden.bs.modal', function() {
+                scope.$apply(function() {
+                    scope.model.visible = false;
+                });
+            });
+        },
+        templateUrl: 'templates/berita_hapus.html'
+    };
+}]);
+
+nodeManager.directive('beritaEditDialog', [function() {
+    return {
+        restrict: 'E',
+        scope: {
+            model: '=',
+        },
+        link: function(scope, element, attributes) {
+            scope.$watch('model.visible', function(newValue) {
+                var modalElement = element.find('.modal');
+                modalElement.modal(newValue ? 'show' : 'hide');
+            });
+            element.on('shown.bs.modal', function() {
+                console.log(scope.model);
+                $('#editisiberita').summernote('destroy');
+                $('#editisiberita').empty();
+                $('#editisiberita').append(scope.model.item.isiberita);
+                $('#editisiberita').summernote({
+                    height: 430
+                });
+                scope.$apply(function() {
+                    scope.model.visible = true;
+                    // $('#editisiberita').summernote('code', $('#isinyaberita').html());
+                });
+            });
+            element.on('hidden.bs.modal', function() {
+                scope.$apply(function() {
+                    scope.model.visible = false;
+                });
+            });
+        },
+        templateUrl: 'templates/berita_edit.html'
     };
 }]);
