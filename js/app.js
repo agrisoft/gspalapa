@@ -5300,7 +5300,7 @@ nodeManager.controller('BeritaCtrl', function($scope, CONFIG, $http, $state, $st
     $scope.pageSize = 10;
     $scope.berita = [];
 
-    $http.get(CONFIG.api_url + 'berita/list').success(function(data) {
+    $http.get(CONFIG.api_url + 'berita/listall').success(function(data) {
         $scope.berita = data;
         $scope.numberOfPages = function() {
             return Math.ceil($scope.berita.length / $scope.pageSize);
